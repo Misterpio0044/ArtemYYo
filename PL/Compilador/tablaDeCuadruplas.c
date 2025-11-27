@@ -11,7 +11,7 @@ TablaDeCuadruplasT nuevaTablaDeCuadruplas() {
     tabla.nextquad = NULL;
     
     for (int i = 0; i < 100; i++) {
-        tabla.celdas[i].operacion = SUMA;
+        tabla.celdas[i].operacion = SUMA_INT;
         tabla.celdas[i].operando1 = -1;
         tabla.celdas[i].operando2 = -1; 
         tabla.celdas[i].resultado = 0;  
@@ -28,29 +28,34 @@ bool insertaCuadrupla(TablaDeCuadruplasT * tabla, char * operacion, int operando
     
     OperacionCuadruplaT op_enum;
     
-    if(strcmp(operacion, "+") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = SUMA;
-    } else if(strcmp(operacion, "-") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RESTA;
-    } else if(strcmp(operacion, "*") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = MULTIPLICACION;
+    if(strcmp(operacion, "+E") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = SUMA_INT;
+    }else if(strcmp(operacion, "+R") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = SUMA_REAL; 
+    } else if(strcmp(operacion, "-E") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RESTA_INT;
+    } else if(strcmp(operacion, "-R") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RESTA_REAL;
+    } else if(strcmp(operacion, "*E") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = MULTIPLICACION_INT;
+    } else if(strcmp(operacion, "*R") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = MULTIPLICACION_REAL;
     } else if(strcmp(operacion, "div") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = DIVISION_ENTERA;
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = DIVISION_INT;
     } else if(strcmp(operacion, "/") == 0){
         tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = DIVISION_REAL;
-    } else if(strcmp(operacion, "mod") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RESTO;
+    } else if(strcmp(operacion, "modE") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RESTO_INT;
+    } else if(strcmp(operacion, "modR") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RESTO_REAL;
     } else {
         printf("Operación desconocida: %s\n", operacion);
         return false;
     }
 
-    printf("%d\n", op_enum);
-    
-    tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = op_enum;
     tabla->celdas[tabla->cantidadDeCeldasLlenas].operando1 = operando1;
     tabla->celdas[tabla->cantidadDeCeldasLlenas].operando2 = operando2;
-    tabla->celdas[tabla->cantidadDeCeldasLlenas].resultado = tabla->cantidadDeCeldasLlenas;
+    tabla->celdas[tabla->cantidadDeCeldasLlenas].resultado = 0;
 
     tabla->cantidadDeCeldasLlenas++;
     return true;
@@ -68,10 +73,45 @@ void imprimeTablaDeCuadruplas(TablaDeCuadruplasT tc){
     }
     
     printf("Operacion\t\tOperando1\tOperando2\tResultado\n");
-    printf("------\t\t----\t\t-----\t\t---------\n");
+    printf("------\t\t\t----\t\t-----\t\t---------\n");
     
     while (i < cantidad) {
-        printf("%d\t\t", tc.celdas[i].operacion);
+        char* operador;
+        switch(tc.celdas[i].operacion) {
+            case SUMA_INT:
+                operador = "+E";
+                break;
+            case SUMA_REAL:
+                operador = "+R";
+                break;
+            case RESTA_INT:
+                operador = "-E";
+                break;
+            case RESTA_REAL:
+                operador = "-R";
+                break;
+            case MULTIPLICACION_INT:
+                operador = "*E";
+                break;
+            case MULTIPLICACION_REAL:
+                operador = "*R";
+                break;
+            case DIVISION_INT:
+                operador = "div";
+                break;
+            case DIVISION_REAL:
+                operador = "/";
+                break;
+            case RESTO_INT:
+                operador = "modE";
+                break;
+            case RESTO_REAL:
+                operador = "modR";
+                break;
+            default:
+                operador = "?";
+        }
+        printf("%s\t\t\t", operador);
         printf("%d\t\t", tc.celdas[i].operando1);
         printf("%d\t\t", tc.celdas[i].operando2);
         printf("%d\n", tc.celdas[i].resultado);

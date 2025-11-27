@@ -5,12 +5,16 @@
 #include "literal.h"
 
 typedef enum operacionCuadruplaT {
-    SUMA,
-    RESTA,
-    MULTIPLICACION,
-    DIVISION_ENTERA,
+    SUMA_INT,
+    SUMA_REAL,
+    RESTA_INT,
+    RESTA_REAL,
+    MULTIPLICACION_INT,
+    MULTIPLICACION_REAL,
+    DIVISION_INT,
     DIVISION_REAL,
-    RESTO
+    RESTO_INT,
+    RESTO_REAL
 } OperacionCuadruplaT;
 
 typedef struct celdaCuadrupla {

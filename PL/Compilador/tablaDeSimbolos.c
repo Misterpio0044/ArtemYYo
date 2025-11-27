@@ -57,10 +57,11 @@ void imprimeTablaDeSimbolos(TablaDeSimbolosT ts){
         return;
     }
     
-    printf("Nombre\t\tTipo\t\tValor\n");
-    printf("------\t\t----\t\t-----\n");
+    printf("ID\t\tNombre\t\tTipo\t\tValor\n");
+    printf("--\t\t------\t\t----\t\t-----\n");
     
     while (i < cantidad) {
+        printf("%d\t\t", ts.celdas[i].id);
         printf("%s\t\t", ts.celdas[i].nombre);
         
         // Imprimir según el tipo
@@ -98,6 +99,53 @@ Celda buscaSimboloPorNombre(TablaDeSimbolosT ts, char * nombre) {
     return vacio;
 }
 
+int newTempVariable(TablaDeSimbolosT * ts) {
+    if (ts->cantidadDeCeldasLlenas >= 100) {
+        printf("La tabla de símbolos está llena, no se puede crear una nueva variable temporal\n");
+        return -1; 
+    }
+    
+    int tempId = ts->cantidadDeCeldasLlenas;
+    
+    ts->cantidadDeCeldasLlenas++;
+    return tempId;
+}
+
+void modificarTipoT(TablaDeSimbolosT * ts, int id, NombreDeTipoT nuevoTipo) {
+    
+    extern TablaDeSimbolosT ts;
+    
+    if (id < 0 || id >= ts->cantidadDeCeldasLlenas) {
+        printf("ID de variable temporal inválido: %d\n", id);
+        return;
+    }
+    
+    ts->celdas[id].tipo = nuevoTipo;
+    
+    // Inicializar el valor según el nuevo tipo
+    switch (nuevoTipo) {
+        case ENTERO:
+            ts->celdas[id].valor.literalNumericoT.tipoDelValor = ENTERO;
+            ts->celdas[id].valor.literalNumericoT.valor.valorEntero = 0;
+            break;
+        case REAL:
+            ts->celdas[id].valor.literalNumericoT.tipoDelValor = REAL;
+            ts->celdas[id].valor.literalNumericoT.valor.valorReal = 0.0f;
+            break;
+        case BOOLEANO:
+            ts->celdas[id].valor.literalBooleanoT.BOOLEANO = BOOLEANO;
+            ts->celdas[id].valor.literalBooleanoT.valor = FALSO;
+            break;
+        case CADENA:
+            ts->celdas[id].valor.literalCadenaT.CADENA = CADENA;
+            ts->celdas[id].valor.literalCadenaT.valor = NULL;
+            break;
+        case CARACTER:
+            ts->celdas[id].valor.literalCaracterT.CARACTER = CARACTER;
+            ts->celdas[id].valor.literalCaracterT.valor = '\0';
+            break;
+    }
+}
 /*
 declaracion var → var lista d var fvar;
 lista d var → lista id : d tipo; lista d var | ε

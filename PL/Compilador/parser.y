@@ -188,17 +188,34 @@ V_expresion: V_exp_a
             | V_funcion_ll;
 V_exp_a: V_exp_a T_OPERADOR_PRIO_TRES V_exp_a
         {
-            printf("%s\n", $2);
             insertaCuadrupla(&tc,$2,$1.id,$3.id);
         };
         | V_exp_a T_OPERADOR_PRIO_DOS V_exp_a 
+        {
+            insertaCuadrupla(&tc,$2,$1.id,$3.id);
+        };
+
         | T_PARENTESIS_APERTURA V_exp_a T_PARENTESIS_CIERRE
+        {
+            $$.id = $2.id;
+            $$.tipo = $2.tipo;
+        };
         | V_operando
         {
             $$ = $1;
         };
         | T_LITERAL_NUMERICO
-        | T_OPERADOR_PRIO_TRES V_exp_a;
+        | T_OPERADOR_PRIO_TRES V_exp_a
+        {
+            int T = newTempVariable(&ts);
+            modificarTipoT(&ts,T, $1.tipo);
+            $$.id = T;
+            if($1.tipo == TIPO_ENTERO){
+                insertaCuadrupla(&tc,"-E", $2.id, T);
+            } else if($1.tipo == TIPO_REAL){
+                insertaCuadrupla(&tc,"-R", $2.id, T);
+            }
+        };
 V_exp_b: V_exp_b T_OPERADOR_Y V_exp_b
         | V_exp_b T_OPERADOR_O V_exp_b
         | T_OPERADOR_NO V_exp_b
@@ -275,6 +292,7 @@ int main(int argc, char **argv){
     tc = nuevaTablaDeCuadruplas();
     nuevaColaDeStrings(&colaTempVariables);
 	yyparse();
+    imprimeTablaDeSimbolos(ts);
 	imprimeTablaDeCuadruplas(tc);
 	return 0;
 }
