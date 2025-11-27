@@ -1,0 +1,2981 @@
+Terminales no usados en la gramática
+
+    T_COMENTARIO
+    T_ERROR
+
+
+Estado 92 conflictos: 2 desplazamiento/reducción
+Estado 129 conflictos: 2 desplazamiento/reducción, 1 reducción/reducción
+Estado 181 conflictos: 1 reducción/reducción
+Estado 182 conflictos: 1 reducción/reducción
+Estado 190 conflictos: 2 reducción/reducción
+
+
+Gramática
+
+    0 $accept: algoritmo $end
+
+    1 algoritmo: T_DECL_ALGORITMO T_ID T_COMPOSICION_SECUENCIAL V_cabecera V_bloque_alg T_TERM_ALGORITMO T_PUNTO
+
+    2 V_cabecera: V_decl_globales V_decl_a_f V_decl_ent_sal T_PREC
+
+    3 V_bloque_alg: V_bloque T_POST
+
+    4 V_decl_globales: V_declaracion_tipo V_decl_globales
+    5                | V_declaracion_const V_decl_globales
+    6                | ε
+
+    7 V_decl_a_f: V_accion_d V_decl_a_f
+    8           | V_funcion_d V_decl_a_f
+    9           | ε
+
+   10 V_bloque: V_declaraciones V_instrucciones
+
+   11 V_declaraciones: V_declaracion_tipo V_declaraciones
+   12                | V_declaracion_const V_declaraciones
+   13                | V_declaracion_var V_declaraciones
+   14                | ε
+
+   15 V_declaracion_tipo: T_DEF_TIPO V_lista_d_tipo T_TERM_TIPO T_COMPOSICION_SECUENCIAL
+
+   16 V_declaracion_const: T_DECL_CONST V_lista_d_const T_TERM_CONST T_COMPOSICION_SECUENCIAL
+
+   17 V_declaracion_var: T_DECL_VAR V_lista_d_var T_TERM_VAR T_COMPOSICION_SECUENCIAL
+
+   18 V_lista_d_tipo: T_ID T_IGUAL V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_d_tipo
+   19               | ε
+
+   20 V_d_tipo: T_DECL_TUPLA V_lista_campos T_TERM_TUPLA
+   21         | T_DECL_TABLA T_CORCHETE_APERTURA V_expresion_t T_SUBRANGO_TABLA V_expresion_t T_CORCHETE_CIERRE T_DE V_d_tipo
+   22         | T_ID
+   23         | V_expresion_t T_SUBRANGO_TABLA V_expresion_t
+   24         | T_REF V_d_tipo
+   25         | T_NOMBRE_TIPO
+
+   26 V_expresion_t: V_expresion
+   27              | T_LITERAL_CARACTER
+
+   28 V_lista_campos: T_ID T_OPERADOR_DEF_TIPO V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_campos
+   29               | ε
+
+   30 V_lista_d_const: T_ID T_IGUAL T_LITERAL_NUMERICO T_COMPOSICION_SECUENCIAL V_lista_d_const
+   31                | T_ID T_IGUAL T_LITERAL_CARACTER T_COMPOSICION_SECUENCIAL V_lista_d_const
+   32                | T_ID_BOOLEANO T_IGUAL T_LITERAL_BOOLEANO T_COMPOSICION_SECUENCIAL V_lista_d_const
+   33                | T_ID T_IGUAL T_LITERAL_CADENA T_COMPOSICION_SECUENCIAL V_lista_d_const
+   34                | ε
+
+   35 V_lista_d_var: V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_d_var
+   36              | ε
+
+   37 V_lista_id: T_ID T_SEPARADOR V_lista_id
+   38           | T_ID
+
+   39 V_decl_ent_sal: V_decl_ent
+   40               | V_decl_ent V_decl_sal
+   41               | V_decl_sal
+
+   42 V_decl_ent: T_ENTRADA V_lista_d_var
+
+   43 V_decl_sal: T_SALIDA V_lista_d_var
+
+   44 V_expresion: V_exp_a
+   45            | V_exp_b
+   46            | V_funcion_ll
+
+   47 V_exp_a: V_exp_a T_OPERADOR_PRIO_TRES V_exp_a
+   48        | V_exp_a T_OPERADOR_PRIO_DOS V_exp_a
+   49        | T_PARENTESIS_APERTURA V_exp_a T_PARENTESIS_CIERRE
+   50        | V_operando
+   51        | T_LITERAL_NUMERICO
+   52        | T_OPERADOR_PRIO_TRES V_exp_a
+
+   53 V_exp_b: V_exp_b T_OPERADOR_Y V_exp_b
+   54        | V_exp_b T_OPERADOR_O V_exp_b
+   55        | T_OPERADOR_NO V_exp_b
+   56        | V_operando_booleano
+   57        | T_LITERAL_BOOLEANO
+   58        | V_expresion T_OPERADOR_RELACIONAL V_expresion
+   59        | T_PARENTESIS_APERTURA V_exp_b T_PARENTESIS_CIERRE
+
+   60 V_operando: V_cadena_operandos
+
+   61 V_cadena_operandos: V_operando_no_booleano V_continuacion_cadena
+
+   62 V_continuacion_cadena: T_PUNTO V_operando_no_booleano V_continuacion_cadena
+   63                      | T_PUNTO V_operando_booleano
+   64                      | ε
+
+   65 V_operando_no_booleano: T_ID
+   66                       | V_operando T_CORCHETE_APERTURA V_expresion T_CORCHETE_CIERRE
+   67                       | V_operando T_REF
+
+   68 V_operando_booleano: T_ID_BOOLEANO
+
+   69 V_instrucciones: V_instruccion T_COMPOSICION_SECUENCIAL V_instrucciones
+   70                | V_instruccion
+
+   71 V_instruccion: T_CONTINUAR
+   72              | V_asignacion
+   73              | V_alternativa
+   74              | V_iiteracion
+   75              | V_accion_ll
+
+   76 V_asignacion: V_operando T_ASIGNACION V_expresion
+
+   77 V_alternativa: T_DECL_CONDICIONAL_SI V_expresion T_ENTONCES V_instrucciones V_lista_opciones T_TERM_CONDICIONAL_SI
+
+   78 V_lista_opciones: T_DECL_CONDICIONAL_SINO V_expresion T_ENTONCES V_instrucciones V_lista_opciones
+   79                 | ε
+
+   80 V_iiteracion: V_it_cota_fija
+   81             | V_it_cota_exp
+
+   82 V_it_cota_exp: T_DECL_B_MIENTRAS V_expresion T_HACER V_instrucciones T_TERM_B_MIENTRAS
+
+   83 V_it_cota_fija: T_DECL_B_PARA T_ID T_ASIGNACION V_expresion T_HASTA V_expresion T_HACER V_instrucciones T_TERM_B_PARA
+
+   84 V_accion_d: T_DECL_ACC V_a_cabecera V_bloque T_TERM_ACC
+
+   85 V_funcion_d: T_DECL_FUNC V_f_cabecera V_bloque T_DEV V_expresion T_TERM_FUNC
+
+   86 V_a_cabecera: T_ID T_PARENTESIS_APERTURA V_d_par_form T_PARENTESIS_CIERRE T_COMPOSICION_SECUENCIAL
+
+   87 V_f_cabecera: T_ID T_PARENTESIS_APERTURA V_lista_d_var T_PARENTESIS_CIERRE T_DEV V_d_tipo T_COMPOSICION_SECUENCIAL
+
+   88 V_d_par_form: V_d_p_form T_COMPOSICION_SECUENCIAL V_d_par_form
+   89             | ε
+
+   90 V_d_p_form: T_ENTRADA V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo
+   91           | T_SALIDA V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo
+   92           | T_E_S V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo
+
+   93 V_accion_ll: T_ID T_PARENTESIS_APERTURA V_l_ll T_PARENTESIS_CIERRE
+
+   94 V_funcion_ll: T_ID T_PARENTESIS_APERTURA V_l_ll T_PARENTESIS_CIERRE
+
+   95 V_l_ll: V_expresion T_SEPARADOR V_l_ll
+   96       | V_expresion
+
+
+Terminales con las reglas donde aparecen
+
+    $end (0) 0
+    error (256)
+    T_ASIGNACION (258) 76 83
+    T_COMENTARIO (259)
+    T_COMPOSICION_SECUENCIAL (260) 1 15 16 17 18 28 30 31 32 33 35 69 86 87 88
+    T_CONTINUAR (261) 71
+    T_CORCHETE_APERTURA (262) 21 66
+    T_CORCHETE_CIERRE (263) 21 66
+    T_DE (264) 21
+    T_DECL_ACC (265) 84
+    T_DECL_ALGORITMO (266) 1
+    T_DECL_B_MIENTRAS (267) 82
+    T_DECL_B_PARA (268) 83
+    T_DECL_CONDICIONAL_SI (269) 77
+    T_DECL_CONDICIONAL_SINO (270) 78
+    T_DECL_CONST (271) 16
+    T_DECL_FUNC (272) 85
+    T_DECL_TABLA (273) 21
+    T_DECL_TUPLA (274) 20
+    T_DECL_VAR (275) 17
+    T_DEF_TIPO (276) 15
+    T_DEV (277) 85 87
+    T_E_S (278) 92
+    T_ENTRADA (279) 42 90
+    T_ENTONCES (280) 77 78
+    T_HACER (281) 82 83
+    T_HASTA (282) 83
+    T_ID <cadena> (283) 1 18 22 28 30 31 33 37 38 65 83 86 87 93 94
+    T_ID_BOOLEANO <cadena> (284) 32 68
+    T_IGUAL (285) 18 30 31 32 33
+    T_LITERAL_BOOLEANO <literal_booleano> (286) 32 57
+    T_LITERAL_CADENA <literal_cadena> (287) 33
+    T_LITERAL_CARACTER <literal_caracter> (288) 27 31
+    T_LITERAL_NUMERICO <literal_numerico> (289) 30 51
+    T_NOMBRE_TIPO <cadena> (290) 25
+    T_OPERADOR_DEF_TIPO (291) 28 35 90 91 92
+    T_OPERADOR_NO (292) 55
+    T_OPERADOR_O (293) 54
+    T_OPERADOR_PRIO_DOS <cadena> (294) 48
+    T_OPERADOR_PRIO_TRES <cadena> (295) 47 52
+    T_OPERADOR_RELACIONAL (296) 58
+    T_OPERADOR_Y (297) 53
+    T_PARENTESIS_APERTURA (298) 49 59 86 87 93 94
+    T_PARENTESIS_CIERRE (299) 49 59 86 87 93 94
+    T_POST (300) 3
+    T_PREC (301) 2
+    T_PUNTO (302) 1 62 63
+    T_REF (303) 24 67
+    T_SALIDA (304) 43 91
+    T_SEPARADOR (305) 37 95
+    T_SUBRANGO_TABLA (306) 21 23
+    T_TERM_ACC (307) 84
+    T_TERM_ALGORITMO (308) 1
+    T_TERM_B_MIENTRAS (309) 82
+    T_TERM_B_PARA (310) 83
+    T_TERM_CONDICIONAL_SI (311) 77
+    T_TERM_CONST (312) 16
+    T_TERM_FUNC (313) 85
+    T_TERM_TIPO (314) 15
+    T_TERM_TUPLA (315) 20
+    T_TERM_VAR (316) 17
+    T_ERROR (317)
+
+
+No terminales con las reglas donde aparecen
+
+    $accept (63)
+        on left: 0
+    algoritmo (64)
+        on left: 1
+        on right: 0
+    V_cabecera (65)
+        on left: 2
+        on right: 1
+    V_bloque_alg (66)
+        on left: 3
+        on right: 1
+    V_decl_globales (67)
+        on left: 4 5 6
+        on right: 2 4 5
+    V_decl_a_f (68)
+        on left: 7 8 9
+        on right: 2 7 8
+    V_bloque (69)
+        on left: 10
+        on right: 3 84 85
+    V_declaraciones (70)
+        on left: 11 12 13 14
+        on right: 10 11 12 13
+    V_declaracion_tipo (71)
+        on left: 15
+        on right: 4 11
+    V_declaracion_const (72)
+        on left: 16
+        on right: 5 12
+    V_declaracion_var (73)
+        on left: 17
+        on right: 13
+    V_lista_d_tipo (74)
+        on left: 18 19
+        on right: 15 18
+    V_d_tipo (75)
+        on left: 20 21 22 23 24 25
+        on right: 18 21 24 28 35 87 90 91 92
+    V_expresion_t (76)
+        on left: 26 27
+        on right: 21 23
+    V_lista_campos (77)
+        on left: 28 29
+        on right: 20 28
+    V_lista_d_const (78)
+        on left: 30 31 32 33 34
+        on right: 16 30 31 32 33
+    V_lista_d_var (79)
+        on left: 35 36
+        on right: 17 35 42 43 87
+    V_lista_id <cadena> (80)
+        on left: 37 38
+        on right: 35 37 90 91 92
+    V_decl_ent_sal (81)
+        on left: 39 40 41
+        on right: 2
+    V_decl_ent (82)
+        on left: 42
+        on right: 39 40
+    V_decl_sal (83)
+        on left: 43
+        on right: 40 41
+    V_expresion (84)
+        on left: 44 45 46
+        on right: 26 58 66 76 77 78 82 83 85 95 96
+    V_exp_a <celda> (85)
+        on left: 47 48 49 50 51 52
+        on right: 44 47 48 49 52
+    V_exp_b (86)
+        on left: 53 54 55 56 57 58 59
+        on right: 45 53 54 55 59
+    V_operando <celda> (87)
+        on left: 60
+        on right: 50 66 67 76
+    V_cadena_operandos <celda> (88)
+        on left: 61
+        on right: 60
+    V_continuacion_cadena (89)
+        on left: 62 63 64
+        on right: 61 62
+    V_operando_no_booleano <celda> (90)
+        on left: 65 66 67
+        on right: 61 62
+    V_operando_booleano (91)
+        on left: 68
+        on right: 56 63
+    V_instrucciones (92)
+        on left: 69 70
+        on right: 10 69 77 78 82 83
+    V_instruccion (93)
+        on left: 71 72 73 74 75
+        on right: 69 70
+    V_asignacion (94)
+        on left: 76
+        on right: 72
+    V_alternativa (95)
+        on left: 77
+        on right: 73
+    V_lista_opciones (96)
+        on left: 78 79
+        on right: 77 78
+    V_iiteracion (97)
+        on left: 80 81
+        on right: 74
+    V_it_cota_exp (98)
+        on left: 82
+        on right: 81
+    V_it_cota_fija (99)
+        on left: 83
+        on right: 80
+    V_accion_d (100)
+        on left: 84
+        on right: 7
+    V_funcion_d (101)
+        on left: 85
+        on right: 8
+    V_a_cabecera (102)
+        on left: 86
+        on right: 84
+    V_f_cabecera (103)
+        on left: 87
+        on right: 85
+    V_d_par_form (104)
+        on left: 88 89
+        on right: 86 88
+    V_d_p_form (105)
+        on left: 90 91 92
+        on right: 88
+    V_accion_ll (106)
+        on left: 93
+        on right: 75
+    V_funcion_ll (107)
+        on left: 94
+        on right: 46
+    V_l_ll (108)
+        on left: 95 96
+        on right: 93 94 95
+
+
+Estado 0
+
+    0 $accept: • algoritmo $end
+
+    T_DECL_ALGORITMO  desplazar e ir al estado 1
+
+    algoritmo  ir al estado 2
+
+
+Estado 1
+
+    1 algoritmo: T_DECL_ALGORITMO • T_ID T_COMPOSICION_SECUENCIAL V_cabecera V_bloque_alg T_TERM_ALGORITMO T_PUNTO
+
+    T_ID  desplazar e ir al estado 3
+
+
+Estado 2
+
+    0 $accept: algoritmo • $end
+
+    $end  desplazar e ir al estado 4
+
+
+Estado 3
+
+    1 algoritmo: T_DECL_ALGORITMO T_ID • T_COMPOSICION_SECUENCIAL V_cabecera V_bloque_alg T_TERM_ALGORITMO T_PUNTO
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 5
+
+
+Estado 4
+
+    0 $accept: algoritmo $end •
+
+    $default  aceptar
+
+
+Estado 5
+
+    1 algoritmo: T_DECL_ALGORITMO T_ID T_COMPOSICION_SECUENCIAL • V_cabecera V_bloque_alg T_TERM_ALGORITMO T_PUNTO
+
+    T_DECL_CONST  desplazar e ir al estado 6
+    T_DEF_TIPO    desplazar e ir al estado 7
+
+    $default  reduce usando la regla 6 (V_decl_globales)
+
+    V_cabecera           ir al estado 8
+    V_decl_globales      ir al estado 9
+    V_declaracion_tipo   ir al estado 10
+    V_declaracion_const  ir al estado 11
+
+
+Estado 6
+
+   16 V_declaracion_const: T_DECL_CONST • V_lista_d_const T_TERM_CONST T_COMPOSICION_SECUENCIAL
+
+    T_ID           desplazar e ir al estado 12
+    T_ID_BOOLEANO  desplazar e ir al estado 13
+
+    $default  reduce usando la regla 34 (V_lista_d_const)
+
+    V_lista_d_const  ir al estado 14
+
+
+Estado 7
+
+   15 V_declaracion_tipo: T_DEF_TIPO • V_lista_d_tipo T_TERM_TIPO T_COMPOSICION_SECUENCIAL
+
+    T_ID  desplazar e ir al estado 15
+
+    $default  reduce usando la regla 19 (V_lista_d_tipo)
+
+    V_lista_d_tipo  ir al estado 16
+
+
+Estado 8
+
+    1 algoritmo: T_DECL_ALGORITMO T_ID T_COMPOSICION_SECUENCIAL V_cabecera • V_bloque_alg T_TERM_ALGORITMO T_PUNTO
+
+    T_DECL_CONST  desplazar e ir al estado 6
+    T_DECL_VAR    desplazar e ir al estado 17
+    T_DEF_TIPO    desplazar e ir al estado 7
+
+    $default  reduce usando la regla 14 (V_declaraciones)
+
+    V_bloque_alg         ir al estado 18
+    V_bloque             ir al estado 19
+    V_declaraciones      ir al estado 20
+    V_declaracion_tipo   ir al estado 21
+    V_declaracion_const  ir al estado 22
+    V_declaracion_var    ir al estado 23
+
+
+Estado 9
+
+    2 V_cabecera: V_decl_globales • V_decl_a_f V_decl_ent_sal T_PREC
+
+    T_DECL_ACC   desplazar e ir al estado 24
+    T_DECL_FUNC  desplazar e ir al estado 25
+
+    $default  reduce usando la regla 9 (V_decl_a_f)
+
+    V_decl_a_f   ir al estado 26
+    V_accion_d   ir al estado 27
+    V_funcion_d  ir al estado 28
+
+
+Estado 10
+
+    4 V_decl_globales: V_declaracion_tipo • V_decl_globales
+
+    T_DECL_CONST  desplazar e ir al estado 6
+    T_DEF_TIPO    desplazar e ir al estado 7
+
+    $default  reduce usando la regla 6 (V_decl_globales)
+
+    V_decl_globales      ir al estado 29
+    V_declaracion_tipo   ir al estado 10
+    V_declaracion_const  ir al estado 11
+
+
+Estado 11
+
+    5 V_decl_globales: V_declaracion_const • V_decl_globales
+
+    T_DECL_CONST  desplazar e ir al estado 6
+    T_DEF_TIPO    desplazar e ir al estado 7
+
+    $default  reduce usando la regla 6 (V_decl_globales)
+
+    V_decl_globales      ir al estado 30
+    V_declaracion_tipo   ir al estado 10
+    V_declaracion_const  ir al estado 11
+
+
+Estado 12
+
+   30 V_lista_d_const: T_ID • T_IGUAL T_LITERAL_NUMERICO T_COMPOSICION_SECUENCIAL V_lista_d_const
+   31                | T_ID • T_IGUAL T_LITERAL_CARACTER T_COMPOSICION_SECUENCIAL V_lista_d_const
+   33                | T_ID • T_IGUAL T_LITERAL_CADENA T_COMPOSICION_SECUENCIAL V_lista_d_const
+
+    T_IGUAL  desplazar e ir al estado 31
+
+
+Estado 13
+
+   32 V_lista_d_const: T_ID_BOOLEANO • T_IGUAL T_LITERAL_BOOLEANO T_COMPOSICION_SECUENCIAL V_lista_d_const
+
+    T_IGUAL  desplazar e ir al estado 32
+
+
+Estado 14
+
+   16 V_declaracion_const: T_DECL_CONST V_lista_d_const • T_TERM_CONST T_COMPOSICION_SECUENCIAL
+
+    T_TERM_CONST  desplazar e ir al estado 33
+
+
+Estado 15
+
+   18 V_lista_d_tipo: T_ID • T_IGUAL V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_d_tipo
+
+    T_IGUAL  desplazar e ir al estado 34
+
+
+Estado 16
+
+   15 V_declaracion_tipo: T_DEF_TIPO V_lista_d_tipo • T_TERM_TIPO T_COMPOSICION_SECUENCIAL
+
+    T_TERM_TIPO  desplazar e ir al estado 35
+
+
+Estado 17
+
+   17 V_declaracion_var: T_DECL_VAR • V_lista_d_var T_TERM_VAR T_COMPOSICION_SECUENCIAL
+
+    T_ID  desplazar e ir al estado 36
+
+    $default  reduce usando la regla 36 (V_lista_d_var)
+
+    V_lista_d_var  ir al estado 37
+    V_lista_id     ir al estado 38
+
+
+Estado 18
+
+    1 algoritmo: T_DECL_ALGORITMO T_ID T_COMPOSICION_SECUENCIAL V_cabecera V_bloque_alg • T_TERM_ALGORITMO T_PUNTO
+
+    T_TERM_ALGORITMO  desplazar e ir al estado 39
+
+
+Estado 19
+
+    3 V_bloque_alg: V_bloque • T_POST
+
+    T_POST  desplazar e ir al estado 40
+
+
+Estado 20
+
+   10 V_bloque: V_declaraciones • V_instrucciones
+
+    T_CONTINUAR            desplazar e ir al estado 41
+    T_DECL_B_MIENTRAS      desplazar e ir al estado 42
+    T_DECL_B_PARA          desplazar e ir al estado 43
+    T_DECL_CONDICIONAL_SI  desplazar e ir al estado 44
+    T_ID                   desplazar e ir al estado 45
+
+    V_operando              ir al estado 46
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_instrucciones         ir al estado 49
+    V_instruccion           ir al estado 50
+    V_asignacion            ir al estado 51
+    V_alternativa           ir al estado 52
+    V_iiteracion            ir al estado 53
+    V_it_cota_exp           ir al estado 54
+    V_it_cota_fija          ir al estado 55
+    V_accion_ll             ir al estado 56
+
+
+Estado 21
+
+   11 V_declaraciones: V_declaracion_tipo • V_declaraciones
+
+    T_DECL_CONST  desplazar e ir al estado 6
+    T_DECL_VAR    desplazar e ir al estado 17
+    T_DEF_TIPO    desplazar e ir al estado 7
+
+    $default  reduce usando la regla 14 (V_declaraciones)
+
+    V_declaraciones      ir al estado 57
+    V_declaracion_tipo   ir al estado 21
+    V_declaracion_const  ir al estado 22
+    V_declaracion_var    ir al estado 23
+
+
+Estado 22
+
+   12 V_declaraciones: V_declaracion_const • V_declaraciones
+
+    T_DECL_CONST  desplazar e ir al estado 6
+    T_DECL_VAR    desplazar e ir al estado 17
+    T_DEF_TIPO    desplazar e ir al estado 7
+
+    $default  reduce usando la regla 14 (V_declaraciones)
+
+    V_declaraciones      ir al estado 58
+    V_declaracion_tipo   ir al estado 21
+    V_declaracion_const  ir al estado 22
+    V_declaracion_var    ir al estado 23
+
+
+Estado 23
+
+   13 V_declaraciones: V_declaracion_var • V_declaraciones
+
+    T_DECL_CONST  desplazar e ir al estado 6
+    T_DECL_VAR    desplazar e ir al estado 17
+    T_DEF_TIPO    desplazar e ir al estado 7
+
+    $default  reduce usando la regla 14 (V_declaraciones)
+
+    V_declaraciones      ir al estado 59
+    V_declaracion_tipo   ir al estado 21
+    V_declaracion_const  ir al estado 22
+    V_declaracion_var    ir al estado 23
+
+
+Estado 24
+
+   84 V_accion_d: T_DECL_ACC • V_a_cabecera V_bloque T_TERM_ACC
+
+    T_ID  desplazar e ir al estado 60
+
+    V_a_cabecera  ir al estado 61
+
+
+Estado 25
+
+   85 V_funcion_d: T_DECL_FUNC • V_f_cabecera V_bloque T_DEV V_expresion T_TERM_FUNC
+
+    T_ID  desplazar e ir al estado 62
+
+    V_f_cabecera  ir al estado 63
+
+
+Estado 26
+
+    2 V_cabecera: V_decl_globales V_decl_a_f • V_decl_ent_sal T_PREC
+
+    T_ENTRADA  desplazar e ir al estado 64
+    T_SALIDA   desplazar e ir al estado 65
+
+    V_decl_ent_sal  ir al estado 66
+    V_decl_ent      ir al estado 67
+    V_decl_sal      ir al estado 68
+
+
+Estado 27
+
+    7 V_decl_a_f: V_accion_d • V_decl_a_f
+
+    T_DECL_ACC   desplazar e ir al estado 24
+    T_DECL_FUNC  desplazar e ir al estado 25
+
+    $default  reduce usando la regla 9 (V_decl_a_f)
+
+    V_decl_a_f   ir al estado 69
+    V_accion_d   ir al estado 27
+    V_funcion_d  ir al estado 28
+
+
+Estado 28
+
+    8 V_decl_a_f: V_funcion_d • V_decl_a_f
+
+    T_DECL_ACC   desplazar e ir al estado 24
+    T_DECL_FUNC  desplazar e ir al estado 25
+
+    $default  reduce usando la regla 9 (V_decl_a_f)
+
+    V_decl_a_f   ir al estado 70
+    V_accion_d   ir al estado 27
+    V_funcion_d  ir al estado 28
+
+
+Estado 29
+
+    4 V_decl_globales: V_declaracion_tipo V_decl_globales •
+
+    $default  reduce usando la regla 4 (V_decl_globales)
+
+
+Estado 30
+
+    5 V_decl_globales: V_declaracion_const V_decl_globales •
+
+    $default  reduce usando la regla 5 (V_decl_globales)
+
+
+Estado 31
+
+   30 V_lista_d_const: T_ID T_IGUAL • T_LITERAL_NUMERICO T_COMPOSICION_SECUENCIAL V_lista_d_const
+   31                | T_ID T_IGUAL • T_LITERAL_CARACTER T_COMPOSICION_SECUENCIAL V_lista_d_const
+   33                | T_ID T_IGUAL • T_LITERAL_CADENA T_COMPOSICION_SECUENCIAL V_lista_d_const
+
+    T_LITERAL_CADENA    desplazar e ir al estado 71
+    T_LITERAL_CARACTER  desplazar e ir al estado 72
+    T_LITERAL_NUMERICO  desplazar e ir al estado 73
+
+
+Estado 32
+
+   32 V_lista_d_const: T_ID_BOOLEANO T_IGUAL • T_LITERAL_BOOLEANO T_COMPOSICION_SECUENCIAL V_lista_d_const
+
+    T_LITERAL_BOOLEANO  desplazar e ir al estado 74
+
+
+Estado 33
+
+   16 V_declaracion_const: T_DECL_CONST V_lista_d_const T_TERM_CONST • T_COMPOSICION_SECUENCIAL
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 75
+
+
+Estado 34
+
+   18 V_lista_d_tipo: T_ID T_IGUAL • V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_d_tipo
+
+    T_DECL_TABLA           desplazar e ir al estado 76
+    T_DECL_TUPLA           desplazar e ir al estado 77
+    T_ID                   desplazar e ir al estado 78
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_CARACTER     desplazar e ir al estado 81
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_NOMBRE_TIPO          desplazar e ir al estado 83
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+    T_REF                  desplazar e ir al estado 87
+
+    V_d_tipo                ir al estado 88
+    V_expresion_t           ir al estado 89
+    V_expresion             ir al estado 90
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 35
+
+   15 V_declaracion_tipo: T_DEF_TIPO V_lista_d_tipo T_TERM_TIPO • T_COMPOSICION_SECUENCIAL
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 96
+
+
+Estado 36
+
+   37 V_lista_id: T_ID • T_SEPARADOR V_lista_id
+   38           | T_ID •
+
+    T_SEPARADOR  desplazar e ir al estado 97
+
+    $default  reduce usando la regla 38 (V_lista_id)
+
+
+Estado 37
+
+   17 V_declaracion_var: T_DECL_VAR V_lista_d_var • T_TERM_VAR T_COMPOSICION_SECUENCIAL
+
+    T_TERM_VAR  desplazar e ir al estado 98
+
+
+Estado 38
+
+   35 V_lista_d_var: V_lista_id • T_OPERADOR_DEF_TIPO V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_d_var
+
+    T_OPERADOR_DEF_TIPO  desplazar e ir al estado 99
+
+
+Estado 39
+
+    1 algoritmo: T_DECL_ALGORITMO T_ID T_COMPOSICION_SECUENCIAL V_cabecera V_bloque_alg T_TERM_ALGORITMO • T_PUNTO
+
+    T_PUNTO  desplazar e ir al estado 100
+
+
+Estado 40
+
+    3 V_bloque_alg: V_bloque T_POST •
+
+    $default  reduce usando la regla 3 (V_bloque_alg)
+
+
+Estado 41
+
+   71 V_instruccion: T_CONTINUAR •
+
+    $default  reduce usando la regla 71 (V_instruccion)
+
+
+Estado 42
+
+   82 V_it_cota_exp: T_DECL_B_MIENTRAS • V_expresion T_HACER V_instrucciones T_TERM_B_MIENTRAS
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 102
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 43
+
+   83 V_it_cota_fija: T_DECL_B_PARA • T_ID T_ASIGNACION V_expresion T_HASTA V_expresion T_HACER V_instrucciones T_TERM_B_PARA
+
+    T_ID  desplazar e ir al estado 103
+
+
+Estado 44
+
+   77 V_alternativa: T_DECL_CONDICIONAL_SI • V_expresion T_ENTONCES V_instrucciones V_lista_opciones T_TERM_CONDICIONAL_SI
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 104
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 45
+
+   65 V_operando_no_booleano: T_ID •
+   93 V_accion_ll: T_ID • T_PARENTESIS_APERTURA V_l_ll T_PARENTESIS_CIERRE
+
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 105
+
+    $default  reduce usando la regla 65 (V_operando_no_booleano)
+
+
+Estado 46
+
+   66 V_operando_no_booleano: V_operando • T_CORCHETE_APERTURA V_expresion T_CORCHETE_CIERRE
+   67                       | V_operando • T_REF
+   76 V_asignacion: V_operando • T_ASIGNACION V_expresion
+
+    T_ASIGNACION         desplazar e ir al estado 106
+    T_CORCHETE_APERTURA  desplazar e ir al estado 107
+    T_REF                desplazar e ir al estado 108
+
+
+Estado 47
+
+   60 V_operando: V_cadena_operandos •
+
+    $default  reduce usando la regla 60 (V_operando)
+
+
+Estado 48
+
+   61 V_cadena_operandos: V_operando_no_booleano • V_continuacion_cadena
+
+    T_PUNTO  desplazar e ir al estado 109
+
+    $default  reduce usando la regla 64 (V_continuacion_cadena)
+
+    V_continuacion_cadena  ir al estado 110
+
+
+Estado 49
+
+   10 V_bloque: V_declaraciones V_instrucciones •
+
+    $default  reduce usando la regla 10 (V_bloque)
+
+
+Estado 50
+
+   69 V_instrucciones: V_instruccion • T_COMPOSICION_SECUENCIAL V_instrucciones
+   70                | V_instruccion •
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 111
+
+    $default  reduce usando la regla 70 (V_instrucciones)
+
+
+Estado 51
+
+   72 V_instruccion: V_asignacion •
+
+    $default  reduce usando la regla 72 (V_instruccion)
+
+
+Estado 52
+
+   73 V_instruccion: V_alternativa •
+
+    $default  reduce usando la regla 73 (V_instruccion)
+
+
+Estado 53
+
+   74 V_instruccion: V_iiteracion •
+
+    $default  reduce usando la regla 74 (V_instruccion)
+
+
+Estado 54
+
+   81 V_iiteracion: V_it_cota_exp •
+
+    $default  reduce usando la regla 81 (V_iiteracion)
+
+
+Estado 55
+
+   80 V_iiteracion: V_it_cota_fija •
+
+    $default  reduce usando la regla 80 (V_iiteracion)
+
+
+Estado 56
+
+   75 V_instruccion: V_accion_ll •
+
+    $default  reduce usando la regla 75 (V_instruccion)
+
+
+Estado 57
+
+   11 V_declaraciones: V_declaracion_tipo V_declaraciones •
+
+    $default  reduce usando la regla 11 (V_declaraciones)
+
+
+Estado 58
+
+   12 V_declaraciones: V_declaracion_const V_declaraciones •
+
+    $default  reduce usando la regla 12 (V_declaraciones)
+
+
+Estado 59
+
+   13 V_declaraciones: V_declaracion_var V_declaraciones •
+
+    $default  reduce usando la regla 13 (V_declaraciones)
+
+
+Estado 60
+
+   86 V_a_cabecera: T_ID • T_PARENTESIS_APERTURA V_d_par_form T_PARENTESIS_CIERRE T_COMPOSICION_SECUENCIAL
+
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 112
+
+
+Estado 61
+
+   84 V_accion_d: T_DECL_ACC V_a_cabecera • V_bloque T_TERM_ACC
+
+    T_DECL_CONST  desplazar e ir al estado 6
+    T_DECL_VAR    desplazar e ir al estado 17
+    T_DEF_TIPO    desplazar e ir al estado 7
+
+    $default  reduce usando la regla 14 (V_declaraciones)
+
+    V_bloque             ir al estado 113
+    V_declaraciones      ir al estado 20
+    V_declaracion_tipo   ir al estado 21
+    V_declaracion_const  ir al estado 22
+    V_declaracion_var    ir al estado 23
+
+
+Estado 62
+
+   87 V_f_cabecera: T_ID • T_PARENTESIS_APERTURA V_lista_d_var T_PARENTESIS_CIERRE T_DEV V_d_tipo T_COMPOSICION_SECUENCIAL
+
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 114
+
+
+Estado 63
+
+   85 V_funcion_d: T_DECL_FUNC V_f_cabecera • V_bloque T_DEV V_expresion T_TERM_FUNC
+
+    T_DECL_CONST  desplazar e ir al estado 6
+    T_DECL_VAR    desplazar e ir al estado 17
+    T_DEF_TIPO    desplazar e ir al estado 7
+
+    $default  reduce usando la regla 14 (V_declaraciones)
+
+    V_bloque             ir al estado 115
+    V_declaraciones      ir al estado 20
+    V_declaracion_tipo   ir al estado 21
+    V_declaracion_const  ir al estado 22
+    V_declaracion_var    ir al estado 23
+
+
+Estado 64
+
+   42 V_decl_ent: T_ENTRADA • V_lista_d_var
+
+    T_ID  desplazar e ir al estado 36
+
+    $default  reduce usando la regla 36 (V_lista_d_var)
+
+    V_lista_d_var  ir al estado 116
+    V_lista_id     ir al estado 38
+
+
+Estado 65
+
+   43 V_decl_sal: T_SALIDA • V_lista_d_var
+
+    T_ID  desplazar e ir al estado 36
+
+    $default  reduce usando la regla 36 (V_lista_d_var)
+
+    V_lista_d_var  ir al estado 117
+    V_lista_id     ir al estado 38
+
+
+Estado 66
+
+    2 V_cabecera: V_decl_globales V_decl_a_f V_decl_ent_sal • T_PREC
+
+    T_PREC  desplazar e ir al estado 118
+
+
+Estado 67
+
+   39 V_decl_ent_sal: V_decl_ent •
+   40               | V_decl_ent • V_decl_sal
+
+    T_SALIDA  desplazar e ir al estado 65
+
+    $default  reduce usando la regla 39 (V_decl_ent_sal)
+
+    V_decl_sal  ir al estado 119
+
+
+Estado 68
+
+   41 V_decl_ent_sal: V_decl_sal •
+
+    $default  reduce usando la regla 41 (V_decl_ent_sal)
+
+
+Estado 69
+
+    7 V_decl_a_f: V_accion_d V_decl_a_f •
+
+    $default  reduce usando la regla 7 (V_decl_a_f)
+
+
+Estado 70
+
+    8 V_decl_a_f: V_funcion_d V_decl_a_f •
+
+    $default  reduce usando la regla 8 (V_decl_a_f)
+
+
+Estado 71
+
+   33 V_lista_d_const: T_ID T_IGUAL T_LITERAL_CADENA • T_COMPOSICION_SECUENCIAL V_lista_d_const
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 120
+
+
+Estado 72
+
+   31 V_lista_d_const: T_ID T_IGUAL T_LITERAL_CARACTER • T_COMPOSICION_SECUENCIAL V_lista_d_const
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 121
+
+
+Estado 73
+
+   30 V_lista_d_const: T_ID T_IGUAL T_LITERAL_NUMERICO • T_COMPOSICION_SECUENCIAL V_lista_d_const
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 122
+
+
+Estado 74
+
+   32 V_lista_d_const: T_ID_BOOLEANO T_IGUAL T_LITERAL_BOOLEANO • T_COMPOSICION_SECUENCIAL V_lista_d_const
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 123
+
+
+Estado 75
+
+   16 V_declaracion_const: T_DECL_CONST V_lista_d_const T_TERM_CONST T_COMPOSICION_SECUENCIAL •
+
+    $default  reduce usando la regla 16 (V_declaracion_const)
+
+
+Estado 76
+
+   21 V_d_tipo: T_DECL_TABLA • T_CORCHETE_APERTURA V_expresion_t T_SUBRANGO_TABLA V_expresion_t T_CORCHETE_CIERRE T_DE V_d_tipo
+
+    T_CORCHETE_APERTURA  desplazar e ir al estado 124
+
+
+Estado 77
+
+   20 V_d_tipo: T_DECL_TUPLA • V_lista_campos T_TERM_TUPLA
+
+    T_ID  desplazar e ir al estado 125
+
+    $default  reduce usando la regla 29 (V_lista_campos)
+
+    V_lista_campos  ir al estado 126
+
+
+Estado 78
+
+   22 V_d_tipo: T_ID •
+   65 V_operando_no_booleano: T_ID •
+   94 V_funcion_ll: T_ID • T_PARENTESIS_APERTURA V_l_ll T_PARENTESIS_CIERRE
+
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 127
+
+    T_COMPOSICION_SECUENCIAL  reduce usando la regla 22 (V_d_tipo)
+    $default                  reduce usando la regla 65 (V_operando_no_booleano)
+
+
+Estado 79
+
+   68 V_operando_booleano: T_ID_BOOLEANO •
+
+    $default  reduce usando la regla 68 (V_operando_booleano)
+
+
+Estado 80
+
+   57 V_exp_b: T_LITERAL_BOOLEANO •
+
+    $default  reduce usando la regla 57 (V_exp_b)
+
+
+Estado 81
+
+   27 V_expresion_t: T_LITERAL_CARACTER •
+
+    $default  reduce usando la regla 27 (V_expresion_t)
+
+
+Estado 82
+
+   51 V_exp_a: T_LITERAL_NUMERICO •
+
+    $default  reduce usando la regla 51 (V_exp_a)
+
+
+Estado 83
+
+   25 V_d_tipo: T_NOMBRE_TIPO •
+
+    $default  reduce usando la regla 25 (V_d_tipo)
+
+
+Estado 84
+
+   55 V_exp_b: T_OPERADOR_NO • V_exp_b
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 128
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 129
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 85
+
+   52 V_exp_a: T_OPERADOR_PRIO_TRES • V_exp_a
+
+    T_ID                   desplazar e ir al estado 130
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 131
+
+    V_exp_a                 ir al estado 132
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+
+
+Estado 86
+
+   49 V_exp_a: T_PARENTESIS_APERTURA • V_exp_a T_PARENTESIS_CIERRE
+   59 V_exp_b: T_PARENTESIS_APERTURA • V_exp_b T_PARENTESIS_CIERRE
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 128
+    V_exp_a                 ir al estado 133
+    V_exp_b                 ir al estado 134
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 87
+
+   24 V_d_tipo: T_REF • V_d_tipo
+
+    T_DECL_TABLA           desplazar e ir al estado 76
+    T_DECL_TUPLA           desplazar e ir al estado 77
+    T_ID                   desplazar e ir al estado 78
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_CARACTER     desplazar e ir al estado 81
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_NOMBRE_TIPO          desplazar e ir al estado 83
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+    T_REF                  desplazar e ir al estado 87
+
+    V_d_tipo                ir al estado 135
+    V_expresion_t           ir al estado 89
+    V_expresion             ir al estado 90
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 88
+
+   18 V_lista_d_tipo: T_ID T_IGUAL V_d_tipo • T_COMPOSICION_SECUENCIAL V_lista_d_tipo
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 136
+
+
+Estado 89
+
+   23 V_d_tipo: V_expresion_t • T_SUBRANGO_TABLA V_expresion_t
+
+    T_SUBRANGO_TABLA  desplazar e ir al estado 137
+
+
+Estado 90
+
+   26 V_expresion_t: V_expresion •
+   58 V_exp_b: V_expresion • T_OPERADOR_RELACIONAL V_expresion
+
+    T_OPERADOR_RELACIONAL  desplazar e ir al estado 138
+
+    $default  reduce usando la regla 26 (V_expresion_t)
+
+
+Estado 91
+
+   44 V_expresion: V_exp_a •
+   47 V_exp_a: V_exp_a • T_OPERADOR_PRIO_TRES V_exp_a
+   48        | V_exp_a • T_OPERADOR_PRIO_DOS V_exp_a
+
+    T_OPERADOR_PRIO_DOS   desplazar e ir al estado 139
+    T_OPERADOR_PRIO_TRES  desplazar e ir al estado 140
+
+    $default  reduce usando la regla 44 (V_expresion)
+
+
+Estado 92
+
+   45 V_expresion: V_exp_b •
+   53 V_exp_b: V_exp_b • T_OPERADOR_Y V_exp_b
+   54        | V_exp_b • T_OPERADOR_O V_exp_b
+
+    T_OPERADOR_O  desplazar e ir al estado 141
+    T_OPERADOR_Y  desplazar e ir al estado 142
+
+    T_OPERADOR_O  [reduce usando la regla 45 (V_expresion)]
+    T_OPERADOR_Y  [reduce usando la regla 45 (V_expresion)]
+    $default      reduce usando la regla 45 (V_expresion)
+
+
+Estado 93
+
+   50 V_exp_a: V_operando •
+   66 V_operando_no_booleano: V_operando • T_CORCHETE_APERTURA V_expresion T_CORCHETE_CIERRE
+   67                       | V_operando • T_REF
+
+    T_CORCHETE_APERTURA  desplazar e ir al estado 107
+    T_REF                desplazar e ir al estado 108
+
+    $default  reduce usando la regla 50 (V_exp_a)
+
+
+Estado 94
+
+   56 V_exp_b: V_operando_booleano •
+
+    $default  reduce usando la regla 56 (V_exp_b)
+
+
+Estado 95
+
+   46 V_expresion: V_funcion_ll •
+
+    $default  reduce usando la regla 46 (V_expresion)
+
+
+Estado 96
+
+   15 V_declaracion_tipo: T_DEF_TIPO V_lista_d_tipo T_TERM_TIPO T_COMPOSICION_SECUENCIAL •
+
+    $default  reduce usando la regla 15 (V_declaracion_tipo)
+
+
+Estado 97
+
+   37 V_lista_id: T_ID T_SEPARADOR • V_lista_id
+
+    T_ID  desplazar e ir al estado 36
+
+    V_lista_id  ir al estado 143
+
+
+Estado 98
+
+   17 V_declaracion_var: T_DECL_VAR V_lista_d_var T_TERM_VAR • T_COMPOSICION_SECUENCIAL
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 144
+
+
+Estado 99
+
+   35 V_lista_d_var: V_lista_id T_OPERADOR_DEF_TIPO • V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_d_var
+
+    T_DECL_TABLA           desplazar e ir al estado 76
+    T_DECL_TUPLA           desplazar e ir al estado 77
+    T_ID                   desplazar e ir al estado 78
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_CARACTER     desplazar e ir al estado 81
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_NOMBRE_TIPO          desplazar e ir al estado 83
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+    T_REF                  desplazar e ir al estado 87
+
+    V_d_tipo                ir al estado 145
+    V_expresion_t           ir al estado 89
+    V_expresion             ir al estado 90
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 100
+
+    1 algoritmo: T_DECL_ALGORITMO T_ID T_COMPOSICION_SECUENCIAL V_cabecera V_bloque_alg T_TERM_ALGORITMO T_PUNTO •
+
+    $default  reduce usando la regla 1 (algoritmo)
+
+
+Estado 101
+
+   65 V_operando_no_booleano: T_ID •
+   94 V_funcion_ll: T_ID • T_PARENTESIS_APERTURA V_l_ll T_PARENTESIS_CIERRE
+
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 127
+
+    $default  reduce usando la regla 65 (V_operando_no_booleano)
+
+
+Estado 102
+
+   58 V_exp_b: V_expresion • T_OPERADOR_RELACIONAL V_expresion
+   82 V_it_cota_exp: T_DECL_B_MIENTRAS V_expresion • T_HACER V_instrucciones T_TERM_B_MIENTRAS
+
+    T_HACER                desplazar e ir al estado 146
+    T_OPERADOR_RELACIONAL  desplazar e ir al estado 138
+
+
+Estado 103
+
+   83 V_it_cota_fija: T_DECL_B_PARA T_ID • T_ASIGNACION V_expresion T_HASTA V_expresion T_HACER V_instrucciones T_TERM_B_PARA
+
+    T_ASIGNACION  desplazar e ir al estado 147
+
+
+Estado 104
+
+   58 V_exp_b: V_expresion • T_OPERADOR_RELACIONAL V_expresion
+   77 V_alternativa: T_DECL_CONDICIONAL_SI V_expresion • T_ENTONCES V_instrucciones V_lista_opciones T_TERM_CONDICIONAL_SI
+
+    T_ENTONCES             desplazar e ir al estado 148
+    T_OPERADOR_RELACIONAL  desplazar e ir al estado 138
+
+
+Estado 105
+
+   93 V_accion_ll: T_ID T_PARENTESIS_APERTURA • V_l_ll T_PARENTESIS_CIERRE
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 149
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+    V_l_ll                  ir al estado 150
+
+
+Estado 106
+
+   76 V_asignacion: V_operando T_ASIGNACION • V_expresion
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 151
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 107
+
+   66 V_operando_no_booleano: V_operando T_CORCHETE_APERTURA • V_expresion T_CORCHETE_CIERRE
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 152
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 108
+
+   67 V_operando_no_booleano: V_operando T_REF •
+
+    $default  reduce usando la regla 67 (V_operando_no_booleano)
+
+
+Estado 109
+
+   62 V_continuacion_cadena: T_PUNTO • V_operando_no_booleano V_continuacion_cadena
+   63                      | T_PUNTO • V_operando_booleano
+
+    T_ID           desplazar e ir al estado 130
+    T_ID_BOOLEANO  desplazar e ir al estado 79
+
+    V_operando              ir al estado 153
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 154
+    V_operando_booleano     ir al estado 155
+
+
+Estado 110
+
+   61 V_cadena_operandos: V_operando_no_booleano V_continuacion_cadena •
+
+    $default  reduce usando la regla 61 (V_cadena_operandos)
+
+
+Estado 111
+
+   69 V_instrucciones: V_instruccion T_COMPOSICION_SECUENCIAL • V_instrucciones
+
+    T_CONTINUAR            desplazar e ir al estado 41
+    T_DECL_B_MIENTRAS      desplazar e ir al estado 42
+    T_DECL_B_PARA          desplazar e ir al estado 43
+    T_DECL_CONDICIONAL_SI  desplazar e ir al estado 44
+    T_ID                   desplazar e ir al estado 45
+
+    V_operando              ir al estado 46
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_instrucciones         ir al estado 156
+    V_instruccion           ir al estado 50
+    V_asignacion            ir al estado 51
+    V_alternativa           ir al estado 52
+    V_iiteracion            ir al estado 53
+    V_it_cota_exp           ir al estado 54
+    V_it_cota_fija          ir al estado 55
+    V_accion_ll             ir al estado 56
+
+
+Estado 112
+
+   86 V_a_cabecera: T_ID T_PARENTESIS_APERTURA • V_d_par_form T_PARENTESIS_CIERRE T_COMPOSICION_SECUENCIAL
+
+    T_E_S      desplazar e ir al estado 157
+    T_ENTRADA  desplazar e ir al estado 158
+    T_SALIDA   desplazar e ir al estado 159
+
+    $default  reduce usando la regla 89 (V_d_par_form)
+
+    V_d_par_form  ir al estado 160
+    V_d_p_form    ir al estado 161
+
+
+Estado 113
+
+   84 V_accion_d: T_DECL_ACC V_a_cabecera V_bloque • T_TERM_ACC
+
+    T_TERM_ACC  desplazar e ir al estado 162
+
+
+Estado 114
+
+   87 V_f_cabecera: T_ID T_PARENTESIS_APERTURA • V_lista_d_var T_PARENTESIS_CIERRE T_DEV V_d_tipo T_COMPOSICION_SECUENCIAL
+
+    T_ID  desplazar e ir al estado 36
+
+    $default  reduce usando la regla 36 (V_lista_d_var)
+
+    V_lista_d_var  ir al estado 163
+    V_lista_id     ir al estado 38
+
+
+Estado 115
+
+   85 V_funcion_d: T_DECL_FUNC V_f_cabecera V_bloque • T_DEV V_expresion T_TERM_FUNC
+
+    T_DEV  desplazar e ir al estado 164
+
+
+Estado 116
+
+   42 V_decl_ent: T_ENTRADA V_lista_d_var •
+
+    $default  reduce usando la regla 42 (V_decl_ent)
+
+
+Estado 117
+
+   43 V_decl_sal: T_SALIDA V_lista_d_var •
+
+    $default  reduce usando la regla 43 (V_decl_sal)
+
+
+Estado 118
+
+    2 V_cabecera: V_decl_globales V_decl_a_f V_decl_ent_sal T_PREC •
+
+    $default  reduce usando la regla 2 (V_cabecera)
+
+
+Estado 119
+
+   40 V_decl_ent_sal: V_decl_ent V_decl_sal •
+
+    $default  reduce usando la regla 40 (V_decl_ent_sal)
+
+
+Estado 120
+
+   33 V_lista_d_const: T_ID T_IGUAL T_LITERAL_CADENA T_COMPOSICION_SECUENCIAL • V_lista_d_const
+
+    T_ID           desplazar e ir al estado 12
+    T_ID_BOOLEANO  desplazar e ir al estado 13
+
+    $default  reduce usando la regla 34 (V_lista_d_const)
+
+    V_lista_d_const  ir al estado 165
+
+
+Estado 121
+
+   31 V_lista_d_const: T_ID T_IGUAL T_LITERAL_CARACTER T_COMPOSICION_SECUENCIAL • V_lista_d_const
+
+    T_ID           desplazar e ir al estado 12
+    T_ID_BOOLEANO  desplazar e ir al estado 13
+
+    $default  reduce usando la regla 34 (V_lista_d_const)
+
+    V_lista_d_const  ir al estado 166
+
+
+Estado 122
+
+   30 V_lista_d_const: T_ID T_IGUAL T_LITERAL_NUMERICO T_COMPOSICION_SECUENCIAL • V_lista_d_const
+
+    T_ID           desplazar e ir al estado 12
+    T_ID_BOOLEANO  desplazar e ir al estado 13
+
+    $default  reduce usando la regla 34 (V_lista_d_const)
+
+    V_lista_d_const  ir al estado 167
+
+
+Estado 123
+
+   32 V_lista_d_const: T_ID_BOOLEANO T_IGUAL T_LITERAL_BOOLEANO T_COMPOSICION_SECUENCIAL • V_lista_d_const
+
+    T_ID           desplazar e ir al estado 12
+    T_ID_BOOLEANO  desplazar e ir al estado 13
+
+    $default  reduce usando la regla 34 (V_lista_d_const)
+
+    V_lista_d_const  ir al estado 168
+
+
+Estado 124
+
+   21 V_d_tipo: T_DECL_TABLA T_CORCHETE_APERTURA • V_expresion_t T_SUBRANGO_TABLA V_expresion_t T_CORCHETE_CIERRE T_DE V_d_tipo
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_CARACTER     desplazar e ir al estado 81
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion_t           ir al estado 169
+    V_expresion             ir al estado 90
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 125
+
+   28 V_lista_campos: T_ID • T_OPERADOR_DEF_TIPO V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_campos
+
+    T_OPERADOR_DEF_TIPO  desplazar e ir al estado 170
+
+
+Estado 126
+
+   20 V_d_tipo: T_DECL_TUPLA V_lista_campos • T_TERM_TUPLA
+
+    T_TERM_TUPLA  desplazar e ir al estado 171
+
+
+Estado 127
+
+   94 V_funcion_ll: T_ID T_PARENTESIS_APERTURA • V_l_ll T_PARENTESIS_CIERRE
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 149
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+    V_l_ll                  ir al estado 172
+
+
+Estado 128
+
+   58 V_exp_b: V_expresion • T_OPERADOR_RELACIONAL V_expresion
+
+    T_OPERADOR_RELACIONAL  desplazar e ir al estado 138
+
+
+Estado 129
+
+   45 V_expresion: V_exp_b •
+   53 V_exp_b: V_exp_b • T_OPERADOR_Y V_exp_b
+   54        | V_exp_b • T_OPERADOR_O V_exp_b
+   55        | T_OPERADOR_NO V_exp_b •
+
+    T_OPERADOR_O  desplazar e ir al estado 141
+    T_OPERADOR_Y  desplazar e ir al estado 142
+
+    T_OPERADOR_O           [reduce usando la regla 55 (V_exp_b)]
+    T_OPERADOR_RELACIONAL  reduce usando la regla 45 (V_expresion)
+    T_OPERADOR_RELACIONAL  [reduce usando la regla 55 (V_exp_b)]
+    T_OPERADOR_Y           [reduce usando la regla 55 (V_exp_b)]
+    $default               reduce usando la regla 55 (V_exp_b)
+
+
+Estado 130
+
+   65 V_operando_no_booleano: T_ID •
+
+    $default  reduce usando la regla 65 (V_operando_no_booleano)
+
+
+Estado 131
+
+   49 V_exp_a: T_PARENTESIS_APERTURA • V_exp_a T_PARENTESIS_CIERRE
+
+    T_ID                   desplazar e ir al estado 130
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 131
+
+    V_exp_a                 ir al estado 173
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+
+
+Estado 132
+
+   47 V_exp_a: V_exp_a • T_OPERADOR_PRIO_TRES V_exp_a
+   48        | V_exp_a • T_OPERADOR_PRIO_DOS V_exp_a
+   52        | T_OPERADOR_PRIO_TRES V_exp_a •
+
+    T_OPERADOR_PRIO_DOS  desplazar e ir al estado 139
+
+    $default  reduce usando la regla 52 (V_exp_a)
+
+
+Estado 133
+
+   44 V_expresion: V_exp_a •
+   47 V_exp_a: V_exp_a • T_OPERADOR_PRIO_TRES V_exp_a
+   48        | V_exp_a • T_OPERADOR_PRIO_DOS V_exp_a
+   49        | T_PARENTESIS_APERTURA V_exp_a • T_PARENTESIS_CIERRE
+
+    T_OPERADOR_PRIO_DOS   desplazar e ir al estado 139
+    T_OPERADOR_PRIO_TRES  desplazar e ir al estado 140
+    T_PARENTESIS_CIERRE   desplazar e ir al estado 174
+
+    $default  reduce usando la regla 44 (V_expresion)
+
+
+Estado 134
+
+   45 V_expresion: V_exp_b •
+   53 V_exp_b: V_exp_b • T_OPERADOR_Y V_exp_b
+   54        | V_exp_b • T_OPERADOR_O V_exp_b
+   59        | T_PARENTESIS_APERTURA V_exp_b • T_PARENTESIS_CIERRE
+
+    T_OPERADOR_O         desplazar e ir al estado 141
+    T_OPERADOR_Y         desplazar e ir al estado 142
+    T_PARENTESIS_CIERRE  desplazar e ir al estado 175
+
+    $default  reduce usando la regla 45 (V_expresion)
+
+
+Estado 135
+
+   24 V_d_tipo: T_REF V_d_tipo •
+
+    $default  reduce usando la regla 24 (V_d_tipo)
+
+
+Estado 136
+
+   18 V_lista_d_tipo: T_ID T_IGUAL V_d_tipo T_COMPOSICION_SECUENCIAL • V_lista_d_tipo
+
+    T_ID  desplazar e ir al estado 15
+
+    $default  reduce usando la regla 19 (V_lista_d_tipo)
+
+    V_lista_d_tipo  ir al estado 176
+
+
+Estado 137
+
+   23 V_d_tipo: V_expresion_t T_SUBRANGO_TABLA • V_expresion_t
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_CARACTER     desplazar e ir al estado 81
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion_t           ir al estado 177
+    V_expresion             ir al estado 90
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 138
+
+   58 V_exp_b: V_expresion T_OPERADOR_RELACIONAL • V_expresion
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 178
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 139
+
+   48 V_exp_a: V_exp_a T_OPERADOR_PRIO_DOS • V_exp_a
+
+    T_ID                   desplazar e ir al estado 130
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 131
+
+    V_exp_a                 ir al estado 179
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+
+
+Estado 140
+
+   47 V_exp_a: V_exp_a T_OPERADOR_PRIO_TRES • V_exp_a
+
+    T_ID                   desplazar e ir al estado 130
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 131
+
+    V_exp_a                 ir al estado 180
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+
+
+Estado 141
+
+   54 V_exp_b: V_exp_b T_OPERADOR_O • V_exp_b
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 128
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 181
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 142
+
+   53 V_exp_b: V_exp_b T_OPERADOR_Y • V_exp_b
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 128
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 182
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 143
+
+   37 V_lista_id: T_ID T_SEPARADOR V_lista_id •
+
+    $default  reduce usando la regla 37 (V_lista_id)
+
+
+Estado 144
+
+   17 V_declaracion_var: T_DECL_VAR V_lista_d_var T_TERM_VAR T_COMPOSICION_SECUENCIAL •
+
+    $default  reduce usando la regla 17 (V_declaracion_var)
+
+
+Estado 145
+
+   35 V_lista_d_var: V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo • T_COMPOSICION_SECUENCIAL V_lista_d_var
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 183
+
+
+Estado 146
+
+   82 V_it_cota_exp: T_DECL_B_MIENTRAS V_expresion T_HACER • V_instrucciones T_TERM_B_MIENTRAS
+
+    T_CONTINUAR            desplazar e ir al estado 41
+    T_DECL_B_MIENTRAS      desplazar e ir al estado 42
+    T_DECL_B_PARA          desplazar e ir al estado 43
+    T_DECL_CONDICIONAL_SI  desplazar e ir al estado 44
+    T_ID                   desplazar e ir al estado 45
+
+    V_operando              ir al estado 46
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_instrucciones         ir al estado 184
+    V_instruccion           ir al estado 50
+    V_asignacion            ir al estado 51
+    V_alternativa           ir al estado 52
+    V_iiteracion            ir al estado 53
+    V_it_cota_exp           ir al estado 54
+    V_it_cota_fija          ir al estado 55
+    V_accion_ll             ir al estado 56
+
+
+Estado 147
+
+   83 V_it_cota_fija: T_DECL_B_PARA T_ID T_ASIGNACION • V_expresion T_HASTA V_expresion T_HACER V_instrucciones T_TERM_B_PARA
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 185
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 148
+
+   77 V_alternativa: T_DECL_CONDICIONAL_SI V_expresion T_ENTONCES • V_instrucciones V_lista_opciones T_TERM_CONDICIONAL_SI
+
+    T_CONTINUAR            desplazar e ir al estado 41
+    T_DECL_B_MIENTRAS      desplazar e ir al estado 42
+    T_DECL_B_PARA          desplazar e ir al estado 43
+    T_DECL_CONDICIONAL_SI  desplazar e ir al estado 44
+    T_ID                   desplazar e ir al estado 45
+
+    V_operando              ir al estado 46
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_instrucciones         ir al estado 186
+    V_instruccion           ir al estado 50
+    V_asignacion            ir al estado 51
+    V_alternativa           ir al estado 52
+    V_iiteracion            ir al estado 53
+    V_it_cota_exp           ir al estado 54
+    V_it_cota_fija          ir al estado 55
+    V_accion_ll             ir al estado 56
+
+
+Estado 149
+
+   58 V_exp_b: V_expresion • T_OPERADOR_RELACIONAL V_expresion
+   95 V_l_ll: V_expresion • T_SEPARADOR V_l_ll
+   96       | V_expresion •
+
+    T_OPERADOR_RELACIONAL  desplazar e ir al estado 138
+    T_SEPARADOR            desplazar e ir al estado 187
+
+    $default  reduce usando la regla 96 (V_l_ll)
+
+
+Estado 150
+
+   93 V_accion_ll: T_ID T_PARENTESIS_APERTURA V_l_ll • T_PARENTESIS_CIERRE
+
+    T_PARENTESIS_CIERRE  desplazar e ir al estado 188
+
+
+Estado 151
+
+   58 V_exp_b: V_expresion • T_OPERADOR_RELACIONAL V_expresion
+   76 V_asignacion: V_operando T_ASIGNACION V_expresion •
+
+    T_OPERADOR_RELACIONAL  desplazar e ir al estado 138
+
+    $default  reduce usando la regla 76 (V_asignacion)
+
+
+Estado 152
+
+   58 V_exp_b: V_expresion • T_OPERADOR_RELACIONAL V_expresion
+   66 V_operando_no_booleano: V_operando T_CORCHETE_APERTURA V_expresion • T_CORCHETE_CIERRE
+
+    T_CORCHETE_CIERRE      desplazar e ir al estado 189
+    T_OPERADOR_RELACIONAL  desplazar e ir al estado 138
+
+
+Estado 153
+
+   66 V_operando_no_booleano: V_operando • T_CORCHETE_APERTURA V_expresion T_CORCHETE_CIERRE
+   67                       | V_operando • T_REF
+
+    T_CORCHETE_APERTURA  desplazar e ir al estado 107
+    T_REF                desplazar e ir al estado 108
+
+
+Estado 154
+
+   61 V_cadena_operandos: V_operando_no_booleano • V_continuacion_cadena
+   62 V_continuacion_cadena: T_PUNTO V_operando_no_booleano • V_continuacion_cadena
+
+    T_PUNTO  desplazar e ir al estado 109
+
+    $default  reduce usando la regla 64 (V_continuacion_cadena)
+
+    V_continuacion_cadena  ir al estado 190
+
+
+Estado 155
+
+   63 V_continuacion_cadena: T_PUNTO V_operando_booleano •
+
+    $default  reduce usando la regla 63 (V_continuacion_cadena)
+
+
+Estado 156
+
+   69 V_instrucciones: V_instruccion T_COMPOSICION_SECUENCIAL V_instrucciones •
+
+    $default  reduce usando la regla 69 (V_instrucciones)
+
+
+Estado 157
+
+   92 V_d_p_form: T_E_S • V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo
+
+    T_ID  desplazar e ir al estado 36
+
+    V_lista_id  ir al estado 191
+
+
+Estado 158
+
+   90 V_d_p_form: T_ENTRADA • V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo
+
+    T_ID  desplazar e ir al estado 36
+
+    V_lista_id  ir al estado 192
+
+
+Estado 159
+
+   91 V_d_p_form: T_SALIDA • V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo
+
+    T_ID  desplazar e ir al estado 36
+
+    V_lista_id  ir al estado 193
+
+
+Estado 160
+
+   86 V_a_cabecera: T_ID T_PARENTESIS_APERTURA V_d_par_form • T_PARENTESIS_CIERRE T_COMPOSICION_SECUENCIAL
+
+    T_PARENTESIS_CIERRE  desplazar e ir al estado 194
+
+
+Estado 161
+
+   88 V_d_par_form: V_d_p_form • T_COMPOSICION_SECUENCIAL V_d_par_form
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 195
+
+
+Estado 162
+
+   84 V_accion_d: T_DECL_ACC V_a_cabecera V_bloque T_TERM_ACC •
+
+    $default  reduce usando la regla 84 (V_accion_d)
+
+
+Estado 163
+
+   87 V_f_cabecera: T_ID T_PARENTESIS_APERTURA V_lista_d_var • T_PARENTESIS_CIERRE T_DEV V_d_tipo T_COMPOSICION_SECUENCIAL
+
+    T_PARENTESIS_CIERRE  desplazar e ir al estado 196
+
+
+Estado 164
+
+   85 V_funcion_d: T_DECL_FUNC V_f_cabecera V_bloque T_DEV • V_expresion T_TERM_FUNC
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 197
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 165
+
+   33 V_lista_d_const: T_ID T_IGUAL T_LITERAL_CADENA T_COMPOSICION_SECUENCIAL V_lista_d_const •
+
+    $default  reduce usando la regla 33 (V_lista_d_const)
+
+
+Estado 166
+
+   31 V_lista_d_const: T_ID T_IGUAL T_LITERAL_CARACTER T_COMPOSICION_SECUENCIAL V_lista_d_const •
+
+    $default  reduce usando la regla 31 (V_lista_d_const)
+
+
+Estado 167
+
+   30 V_lista_d_const: T_ID T_IGUAL T_LITERAL_NUMERICO T_COMPOSICION_SECUENCIAL V_lista_d_const •
+
+    $default  reduce usando la regla 30 (V_lista_d_const)
+
+
+Estado 168
+
+   32 V_lista_d_const: T_ID_BOOLEANO T_IGUAL T_LITERAL_BOOLEANO T_COMPOSICION_SECUENCIAL V_lista_d_const •
+
+    $default  reduce usando la regla 32 (V_lista_d_const)
+
+
+Estado 169
+
+   21 V_d_tipo: T_DECL_TABLA T_CORCHETE_APERTURA V_expresion_t • T_SUBRANGO_TABLA V_expresion_t T_CORCHETE_CIERRE T_DE V_d_tipo
+
+    T_SUBRANGO_TABLA  desplazar e ir al estado 198
+
+
+Estado 170
+
+   28 V_lista_campos: T_ID T_OPERADOR_DEF_TIPO • V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_campos
+
+    T_DECL_TABLA           desplazar e ir al estado 76
+    T_DECL_TUPLA           desplazar e ir al estado 77
+    T_ID                   desplazar e ir al estado 78
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_CARACTER     desplazar e ir al estado 81
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_NOMBRE_TIPO          desplazar e ir al estado 83
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+    T_REF                  desplazar e ir al estado 87
+
+    V_d_tipo                ir al estado 199
+    V_expresion_t           ir al estado 89
+    V_expresion             ir al estado 90
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 171
+
+   20 V_d_tipo: T_DECL_TUPLA V_lista_campos T_TERM_TUPLA •
+
+    $default  reduce usando la regla 20 (V_d_tipo)
+
+
+Estado 172
+
+   94 V_funcion_ll: T_ID T_PARENTESIS_APERTURA V_l_ll • T_PARENTESIS_CIERRE
+
+    T_PARENTESIS_CIERRE  desplazar e ir al estado 200
+
+
+Estado 173
+
+   47 V_exp_a: V_exp_a • T_OPERADOR_PRIO_TRES V_exp_a
+   48        | V_exp_a • T_OPERADOR_PRIO_DOS V_exp_a
+   49        | T_PARENTESIS_APERTURA V_exp_a • T_PARENTESIS_CIERRE
+
+    T_OPERADOR_PRIO_DOS   desplazar e ir al estado 139
+    T_OPERADOR_PRIO_TRES  desplazar e ir al estado 140
+    T_PARENTESIS_CIERRE   desplazar e ir al estado 174
+
+
+Estado 174
+
+   49 V_exp_a: T_PARENTESIS_APERTURA V_exp_a T_PARENTESIS_CIERRE •
+
+    $default  reduce usando la regla 49 (V_exp_a)
+
+
+Estado 175
+
+   59 V_exp_b: T_PARENTESIS_APERTURA V_exp_b T_PARENTESIS_CIERRE •
+
+    $default  reduce usando la regla 59 (V_exp_b)
+
+
+Estado 176
+
+   18 V_lista_d_tipo: T_ID T_IGUAL V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_d_tipo •
+
+    $default  reduce usando la regla 18 (V_lista_d_tipo)
+
+
+Estado 177
+
+   23 V_d_tipo: V_expresion_t T_SUBRANGO_TABLA V_expresion_t •
+
+    $default  reduce usando la regla 23 (V_d_tipo)
+
+
+Estado 178
+
+   58 V_exp_b: V_expresion • T_OPERADOR_RELACIONAL V_expresion
+   58        | V_expresion T_OPERADOR_RELACIONAL V_expresion •
+
+    T_OPERADOR_RELACIONAL  error (no asociativo)
+
+    $default  reduce usando la regla 58 (V_exp_b)
+
+
+Estado 179
+
+   47 V_exp_a: V_exp_a • T_OPERADOR_PRIO_TRES V_exp_a
+   48        | V_exp_a • T_OPERADOR_PRIO_DOS V_exp_a
+   48        | V_exp_a T_OPERADOR_PRIO_DOS V_exp_a •
+
+    $default  reduce usando la regla 48 (V_exp_a)
+
+
+Estado 180
+
+   47 V_exp_a: V_exp_a • T_OPERADOR_PRIO_TRES V_exp_a
+   47        | V_exp_a T_OPERADOR_PRIO_TRES V_exp_a •
+   48        | V_exp_a • T_OPERADOR_PRIO_DOS V_exp_a
+
+    T_OPERADOR_PRIO_DOS  desplazar e ir al estado 139
+
+    $default  reduce usando la regla 47 (V_exp_a)
+
+
+Estado 181
+
+   45 V_expresion: V_exp_b •
+   53 V_exp_b: V_exp_b • T_OPERADOR_Y V_exp_b
+   54        | V_exp_b • T_OPERADOR_O V_exp_b
+   54        | V_exp_b T_OPERADOR_O V_exp_b •
+
+    T_OPERADOR_Y  desplazar e ir al estado 142
+
+    T_OPERADOR_RELACIONAL  reduce usando la regla 45 (V_expresion)
+    T_OPERADOR_RELACIONAL  [reduce usando la regla 54 (V_exp_b)]
+    $default               reduce usando la regla 54 (V_exp_b)
+
+
+Estado 182
+
+   45 V_expresion: V_exp_b •
+   53 V_exp_b: V_exp_b • T_OPERADOR_Y V_exp_b
+   53        | V_exp_b T_OPERADOR_Y V_exp_b •
+   54        | V_exp_b • T_OPERADOR_O V_exp_b
+
+    T_OPERADOR_RELACIONAL  reduce usando la regla 45 (V_expresion)
+    T_OPERADOR_RELACIONAL  [reduce usando la regla 53 (V_exp_b)]
+    $default               reduce usando la regla 53 (V_exp_b)
+
+
+Estado 183
+
+   35 V_lista_d_var: V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo T_COMPOSICION_SECUENCIAL • V_lista_d_var
+
+    T_ID  desplazar e ir al estado 36
+
+    $default  reduce usando la regla 36 (V_lista_d_var)
+
+    V_lista_d_var  ir al estado 201
+    V_lista_id     ir al estado 38
+
+
+Estado 184
+
+   82 V_it_cota_exp: T_DECL_B_MIENTRAS V_expresion T_HACER V_instrucciones • T_TERM_B_MIENTRAS
+
+    T_TERM_B_MIENTRAS  desplazar e ir al estado 202
+
+
+Estado 185
+
+   58 V_exp_b: V_expresion • T_OPERADOR_RELACIONAL V_expresion
+   83 V_it_cota_fija: T_DECL_B_PARA T_ID T_ASIGNACION V_expresion • T_HASTA V_expresion T_HACER V_instrucciones T_TERM_B_PARA
+
+    T_HASTA                desplazar e ir al estado 203
+    T_OPERADOR_RELACIONAL  desplazar e ir al estado 138
+
+
+Estado 186
+
+   77 V_alternativa: T_DECL_CONDICIONAL_SI V_expresion T_ENTONCES V_instrucciones • V_lista_opciones T_TERM_CONDICIONAL_SI
+
+    T_DECL_CONDICIONAL_SINO  desplazar e ir al estado 204
+
+    $default  reduce usando la regla 79 (V_lista_opciones)
+
+    V_lista_opciones  ir al estado 205
+
+
+Estado 187
+
+   95 V_l_ll: V_expresion T_SEPARADOR • V_l_ll
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 149
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+    V_l_ll                  ir al estado 206
+
+
+Estado 188
+
+   93 V_accion_ll: T_ID T_PARENTESIS_APERTURA V_l_ll T_PARENTESIS_CIERRE •
+
+    $default  reduce usando la regla 93 (V_accion_ll)
+
+
+Estado 189
+
+   66 V_operando_no_booleano: V_operando T_CORCHETE_APERTURA V_expresion T_CORCHETE_CIERRE •
+
+    $default  reduce usando la regla 66 (V_operando_no_booleano)
+
+
+Estado 190
+
+   61 V_cadena_operandos: V_operando_no_booleano V_continuacion_cadena •
+   62 V_continuacion_cadena: T_PUNTO V_operando_no_booleano V_continuacion_cadena •
+
+    T_CORCHETE_APERTURA  reduce usando la regla 61 (V_cadena_operandos)
+    T_CORCHETE_APERTURA  [reduce usando la regla 62 (V_continuacion_cadena)]
+    T_REF                reduce usando la regla 61 (V_cadena_operandos)
+    T_REF                [reduce usando la regla 62 (V_continuacion_cadena)]
+    $default             reduce usando la regla 62 (V_continuacion_cadena)
+
+
+Estado 191
+
+   92 V_d_p_form: T_E_S V_lista_id • T_OPERADOR_DEF_TIPO V_d_tipo
+
+    T_OPERADOR_DEF_TIPO  desplazar e ir al estado 207
+
+
+Estado 192
+
+   90 V_d_p_form: T_ENTRADA V_lista_id • T_OPERADOR_DEF_TIPO V_d_tipo
+
+    T_OPERADOR_DEF_TIPO  desplazar e ir al estado 208
+
+
+Estado 193
+
+   91 V_d_p_form: T_SALIDA V_lista_id • T_OPERADOR_DEF_TIPO V_d_tipo
+
+    T_OPERADOR_DEF_TIPO  desplazar e ir al estado 209
+
+
+Estado 194
+
+   86 V_a_cabecera: T_ID T_PARENTESIS_APERTURA V_d_par_form T_PARENTESIS_CIERRE • T_COMPOSICION_SECUENCIAL
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 210
+
+
+Estado 195
+
+   88 V_d_par_form: V_d_p_form T_COMPOSICION_SECUENCIAL • V_d_par_form
+
+    T_E_S      desplazar e ir al estado 157
+    T_ENTRADA  desplazar e ir al estado 158
+    T_SALIDA   desplazar e ir al estado 159
+
+    $default  reduce usando la regla 89 (V_d_par_form)
+
+    V_d_par_form  ir al estado 211
+    V_d_p_form    ir al estado 161
+
+
+Estado 196
+
+   87 V_f_cabecera: T_ID T_PARENTESIS_APERTURA V_lista_d_var T_PARENTESIS_CIERRE • T_DEV V_d_tipo T_COMPOSICION_SECUENCIAL
+
+    T_DEV  desplazar e ir al estado 212
+
+
+Estado 197
+
+   58 V_exp_b: V_expresion • T_OPERADOR_RELACIONAL V_expresion
+   85 V_funcion_d: T_DECL_FUNC V_f_cabecera V_bloque T_DEV V_expresion • T_TERM_FUNC
+
+    T_OPERADOR_RELACIONAL  desplazar e ir al estado 138
+    T_TERM_FUNC            desplazar e ir al estado 213
+
+
+Estado 198
+
+   21 V_d_tipo: T_DECL_TABLA T_CORCHETE_APERTURA V_expresion_t T_SUBRANGO_TABLA • V_expresion_t T_CORCHETE_CIERRE T_DE V_d_tipo
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_CARACTER     desplazar e ir al estado 81
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion_t           ir al estado 214
+    V_expresion             ir al estado 90
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 199
+
+   28 V_lista_campos: T_ID T_OPERADOR_DEF_TIPO V_d_tipo • T_COMPOSICION_SECUENCIAL V_lista_campos
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 215
+
+
+Estado 200
+
+   94 V_funcion_ll: T_ID T_PARENTESIS_APERTURA V_l_ll T_PARENTESIS_CIERRE •
+
+    $default  reduce usando la regla 94 (V_funcion_ll)
+
+
+Estado 201
+
+   35 V_lista_d_var: V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_d_var •
+
+    $default  reduce usando la regla 35 (V_lista_d_var)
+
+
+Estado 202
+
+   82 V_it_cota_exp: T_DECL_B_MIENTRAS V_expresion T_HACER V_instrucciones T_TERM_B_MIENTRAS •
+
+    $default  reduce usando la regla 82 (V_it_cota_exp)
+
+
+Estado 203
+
+   83 V_it_cota_fija: T_DECL_B_PARA T_ID T_ASIGNACION V_expresion T_HASTA • V_expresion T_HACER V_instrucciones T_TERM_B_PARA
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 216
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 204
+
+   78 V_lista_opciones: T_DECL_CONDICIONAL_SINO • V_expresion T_ENTONCES V_instrucciones V_lista_opciones
+
+    T_ID                   desplazar e ir al estado 101
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+
+    V_expresion             ir al estado 217
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 205
+
+   77 V_alternativa: T_DECL_CONDICIONAL_SI V_expresion T_ENTONCES V_instrucciones V_lista_opciones • T_TERM_CONDICIONAL_SI
+
+    T_TERM_CONDICIONAL_SI  desplazar e ir al estado 218
+
+
+Estado 206
+
+   95 V_l_ll: V_expresion T_SEPARADOR V_l_ll •
+
+    $default  reduce usando la regla 95 (V_l_ll)
+
+
+Estado 207
+
+   92 V_d_p_form: T_E_S V_lista_id T_OPERADOR_DEF_TIPO • V_d_tipo
+
+    T_DECL_TABLA           desplazar e ir al estado 76
+    T_DECL_TUPLA           desplazar e ir al estado 77
+    T_ID                   desplazar e ir al estado 78
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_CARACTER     desplazar e ir al estado 81
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_NOMBRE_TIPO          desplazar e ir al estado 83
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+    T_REF                  desplazar e ir al estado 87
+
+    V_d_tipo                ir al estado 219
+    V_expresion_t           ir al estado 89
+    V_expresion             ir al estado 90
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 208
+
+   90 V_d_p_form: T_ENTRADA V_lista_id T_OPERADOR_DEF_TIPO • V_d_tipo
+
+    T_DECL_TABLA           desplazar e ir al estado 76
+    T_DECL_TUPLA           desplazar e ir al estado 77
+    T_ID                   desplazar e ir al estado 78
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_CARACTER     desplazar e ir al estado 81
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_NOMBRE_TIPO          desplazar e ir al estado 83
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+    T_REF                  desplazar e ir al estado 87
+
+    V_d_tipo                ir al estado 220
+    V_expresion_t           ir al estado 89
+    V_expresion             ir al estado 90
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 209
+
+   91 V_d_p_form: T_SALIDA V_lista_id T_OPERADOR_DEF_TIPO • V_d_tipo
+
+    T_DECL_TABLA           desplazar e ir al estado 76
+    T_DECL_TUPLA           desplazar e ir al estado 77
+    T_ID                   desplazar e ir al estado 78
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_CARACTER     desplazar e ir al estado 81
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_NOMBRE_TIPO          desplazar e ir al estado 83
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+    T_REF                  desplazar e ir al estado 87
+
+    V_d_tipo                ir al estado 221
+    V_expresion_t           ir al estado 89
+    V_expresion             ir al estado 90
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 210
+
+   86 V_a_cabecera: T_ID T_PARENTESIS_APERTURA V_d_par_form T_PARENTESIS_CIERRE T_COMPOSICION_SECUENCIAL •
+
+    $default  reduce usando la regla 86 (V_a_cabecera)
+
+
+Estado 211
+
+   88 V_d_par_form: V_d_p_form T_COMPOSICION_SECUENCIAL V_d_par_form •
+
+    $default  reduce usando la regla 88 (V_d_par_form)
+
+
+Estado 212
+
+   87 V_f_cabecera: T_ID T_PARENTESIS_APERTURA V_lista_d_var T_PARENTESIS_CIERRE T_DEV • V_d_tipo T_COMPOSICION_SECUENCIAL
+
+    T_DECL_TABLA           desplazar e ir al estado 76
+    T_DECL_TUPLA           desplazar e ir al estado 77
+    T_ID                   desplazar e ir al estado 78
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_CARACTER     desplazar e ir al estado 81
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_NOMBRE_TIPO          desplazar e ir al estado 83
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+    T_REF                  desplazar e ir al estado 87
+
+    V_d_tipo                ir al estado 222
+    V_expresion_t           ir al estado 89
+    V_expresion             ir al estado 90
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 213
+
+   85 V_funcion_d: T_DECL_FUNC V_f_cabecera V_bloque T_DEV V_expresion T_TERM_FUNC •
+
+    $default  reduce usando la regla 85 (V_funcion_d)
+
+
+Estado 214
+
+   21 V_d_tipo: T_DECL_TABLA T_CORCHETE_APERTURA V_expresion_t T_SUBRANGO_TABLA V_expresion_t • T_CORCHETE_CIERRE T_DE V_d_tipo
+
+    T_CORCHETE_CIERRE  desplazar e ir al estado 223
+
+
+Estado 215
+
+   28 V_lista_campos: T_ID T_OPERADOR_DEF_TIPO V_d_tipo T_COMPOSICION_SECUENCIAL • V_lista_campos
+
+    T_ID  desplazar e ir al estado 125
+
+    $default  reduce usando la regla 29 (V_lista_campos)
+
+    V_lista_campos  ir al estado 224
+
+
+Estado 216
+
+   58 V_exp_b: V_expresion • T_OPERADOR_RELACIONAL V_expresion
+   83 V_it_cota_fija: T_DECL_B_PARA T_ID T_ASIGNACION V_expresion T_HASTA V_expresion • T_HACER V_instrucciones T_TERM_B_PARA
+
+    T_HACER                desplazar e ir al estado 225
+    T_OPERADOR_RELACIONAL  desplazar e ir al estado 138
+
+
+Estado 217
+
+   58 V_exp_b: V_expresion • T_OPERADOR_RELACIONAL V_expresion
+   78 V_lista_opciones: T_DECL_CONDICIONAL_SINO V_expresion • T_ENTONCES V_instrucciones V_lista_opciones
+
+    T_ENTONCES             desplazar e ir al estado 226
+    T_OPERADOR_RELACIONAL  desplazar e ir al estado 138
+
+
+Estado 218
+
+   77 V_alternativa: T_DECL_CONDICIONAL_SI V_expresion T_ENTONCES V_instrucciones V_lista_opciones T_TERM_CONDICIONAL_SI •
+
+    $default  reduce usando la regla 77 (V_alternativa)
+
+
+Estado 219
+
+   92 V_d_p_form: T_E_S V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo •
+
+    $default  reduce usando la regla 92 (V_d_p_form)
+
+
+Estado 220
+
+   90 V_d_p_form: T_ENTRADA V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo •
+
+    $default  reduce usando la regla 90 (V_d_p_form)
+
+
+Estado 221
+
+   91 V_d_p_form: T_SALIDA V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo •
+
+    $default  reduce usando la regla 91 (V_d_p_form)
+
+
+Estado 222
+
+   87 V_f_cabecera: T_ID T_PARENTESIS_APERTURA V_lista_d_var T_PARENTESIS_CIERRE T_DEV V_d_tipo • T_COMPOSICION_SECUENCIAL
+
+    T_COMPOSICION_SECUENCIAL  desplazar e ir al estado 227
+
+
+Estado 223
+
+   21 V_d_tipo: T_DECL_TABLA T_CORCHETE_APERTURA V_expresion_t T_SUBRANGO_TABLA V_expresion_t T_CORCHETE_CIERRE • T_DE V_d_tipo
+
+    T_DE  desplazar e ir al estado 228
+
+
+Estado 224
+
+   28 V_lista_campos: T_ID T_OPERADOR_DEF_TIPO V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_campos •
+
+    $default  reduce usando la regla 28 (V_lista_campos)
+
+
+Estado 225
+
+   83 V_it_cota_fija: T_DECL_B_PARA T_ID T_ASIGNACION V_expresion T_HASTA V_expresion T_HACER • V_instrucciones T_TERM_B_PARA
+
+    T_CONTINUAR            desplazar e ir al estado 41
+    T_DECL_B_MIENTRAS      desplazar e ir al estado 42
+    T_DECL_B_PARA          desplazar e ir al estado 43
+    T_DECL_CONDICIONAL_SI  desplazar e ir al estado 44
+    T_ID                   desplazar e ir al estado 45
+
+    V_operando              ir al estado 46
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_instrucciones         ir al estado 229
+    V_instruccion           ir al estado 50
+    V_asignacion            ir al estado 51
+    V_alternativa           ir al estado 52
+    V_iiteracion            ir al estado 53
+    V_it_cota_exp           ir al estado 54
+    V_it_cota_fija          ir al estado 55
+    V_accion_ll             ir al estado 56
+
+
+Estado 226
+
+   78 V_lista_opciones: T_DECL_CONDICIONAL_SINO V_expresion T_ENTONCES • V_instrucciones V_lista_opciones
+
+    T_CONTINUAR            desplazar e ir al estado 41
+    T_DECL_B_MIENTRAS      desplazar e ir al estado 42
+    T_DECL_B_PARA          desplazar e ir al estado 43
+    T_DECL_CONDICIONAL_SI  desplazar e ir al estado 44
+    T_ID                   desplazar e ir al estado 45
+
+    V_operando              ir al estado 46
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_instrucciones         ir al estado 230
+    V_instruccion           ir al estado 50
+    V_asignacion            ir al estado 51
+    V_alternativa           ir al estado 52
+    V_iiteracion            ir al estado 53
+    V_it_cota_exp           ir al estado 54
+    V_it_cota_fija          ir al estado 55
+    V_accion_ll             ir al estado 56
+
+
+Estado 227
+
+   87 V_f_cabecera: T_ID T_PARENTESIS_APERTURA V_lista_d_var T_PARENTESIS_CIERRE T_DEV V_d_tipo T_COMPOSICION_SECUENCIAL •
+
+    $default  reduce usando la regla 87 (V_f_cabecera)
+
+
+Estado 228
+
+   21 V_d_tipo: T_DECL_TABLA T_CORCHETE_APERTURA V_expresion_t T_SUBRANGO_TABLA V_expresion_t T_CORCHETE_CIERRE T_DE • V_d_tipo
+
+    T_DECL_TABLA           desplazar e ir al estado 76
+    T_DECL_TUPLA           desplazar e ir al estado 77
+    T_ID                   desplazar e ir al estado 78
+    T_ID_BOOLEANO          desplazar e ir al estado 79
+    T_LITERAL_BOOLEANO     desplazar e ir al estado 80
+    T_LITERAL_CARACTER     desplazar e ir al estado 81
+    T_LITERAL_NUMERICO     desplazar e ir al estado 82
+    T_NOMBRE_TIPO          desplazar e ir al estado 83
+    T_OPERADOR_NO          desplazar e ir al estado 84
+    T_OPERADOR_PRIO_TRES   desplazar e ir al estado 85
+    T_PARENTESIS_APERTURA  desplazar e ir al estado 86
+    T_REF                  desplazar e ir al estado 87
+
+    V_d_tipo                ir al estado 231
+    V_expresion_t           ir al estado 89
+    V_expresion             ir al estado 90
+    V_exp_a                 ir al estado 91
+    V_exp_b                 ir al estado 92
+    V_operando              ir al estado 93
+    V_cadena_operandos      ir al estado 47
+    V_operando_no_booleano  ir al estado 48
+    V_operando_booleano     ir al estado 94
+    V_funcion_ll            ir al estado 95
+
+
+Estado 229
+
+   83 V_it_cota_fija: T_DECL_B_PARA T_ID T_ASIGNACION V_expresion T_HASTA V_expresion T_HACER V_instrucciones • T_TERM_B_PARA
+
+    T_TERM_B_PARA  desplazar e ir al estado 232
+
+
+Estado 230
+
+   78 V_lista_opciones: T_DECL_CONDICIONAL_SINO V_expresion T_ENTONCES V_instrucciones • V_lista_opciones
+
+    T_DECL_CONDICIONAL_SINO  desplazar e ir al estado 204
+
+    $default  reduce usando la regla 79 (V_lista_opciones)
+
+    V_lista_opciones  ir al estado 233
+
+
+Estado 231
+
+   21 V_d_tipo: T_DECL_TABLA T_CORCHETE_APERTURA V_expresion_t T_SUBRANGO_TABLA V_expresion_t T_CORCHETE_CIERRE T_DE V_d_tipo •
+
+    $default  reduce usando la regla 21 (V_d_tipo)
+
+
+Estado 232
+
+   83 V_it_cota_fija: T_DECL_B_PARA T_ID T_ASIGNACION V_expresion T_HASTA V_expresion T_HACER V_instrucciones T_TERM_B_PARA •
+
+    $default  reduce usando la regla 83 (V_it_cota_fija)
+
+
+Estado 233
+
+   78 V_lista_opciones: T_DECL_CONDICIONAL_SINO V_expresion T_ENTONCES V_instrucciones V_lista_opciones •
+
+    $default  reduce usando la regla 78 (V_lista_opciones)
