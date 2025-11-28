@@ -1,0 +1,90 @@
+
+/*
+html {
+  position:fixed;
+  width:100%;
+  height:100%;
+}
+*/
+
+body {
+    background-image: url("../imagens/background2.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+
+#menu ul li { display: inline; }
+
+/* MENU */
+
+/* resetando a fonte */
+body{
+    font-family: 'RocknRoll One', sans-serif;
+   }
+   
+   /* estilizando a div orverlay */
+.overlay {
+    height: 100vh; /* deixando o overlay 100% na vertical */
+    width: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,.6);
+    opacity: 0; /*iniciando opacidade em 0 */
+    transition: opacity 1s;
+   }
+   
+   /* estilizando o botão abrir menu */
+.menu-open{
+    background: transparent;
+   }
+   
+   /* estilizando o botão fechar menu */
+.menu a.menu-close {
+    padding: -10px 0 10px 20px;
+    color: white;
+    display: block;
+    margin: -10px 0 30px -20px;
+    font-size: 50px;
+    text-decoration: none;
+   }
+   
+   /* estilizando o menu em si */
+.menu {
+    overflow: hidden;
+    background: rgba(0,0,0,.95);
+    padding: 10px 0 0 40px;
+    position: fixed;
+    top: 0;
+    right: -290px; /*iniciando o menu com menos 290px para fora do browser*/
+    height: 100%;
+    z-index: 2;
+    transition: 1s;
+    width: 250px;
+   }
+   
+   /* estilizando o menu + ul */
+.menu ul{
+    list-style: none;
+    padding: 0;
+    margin: -25px;
+    overflow-y: auto;
+    width: 500px;
+    height: 95%;
+
+   }
+   
+   /* estilizando o menu + ul li + a */
+.menu ul li a {
+    display: block;
+    border-bottom: 0 #131313;
+    padding: 6px 4px 6px 4px;
+    color:white;
+    transition: 1s;
+    text-decoration: none;
+
+   }
+
+
