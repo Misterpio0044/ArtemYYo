@@ -40,16 +40,18 @@ bool insertaCuadrupla(TablaDeCuadruplasT * tabla, int id,  char * operacion, int
         tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = MULTIPLICACION_INT;
     } else if(strcmp(operacion, "*R") == 0){
         tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = MULTIPLICACION_REAL;
-    } else if(strcmp(operacion, "div") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = DIVISION_INT;
     } else if(strcmp(operacion, "/") == 0){
         tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = DIVISION_REAL;
+    } else if(strcmp(operacion, "div") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = DIVISION_INT;
     } else if(strcmp(operacion, "modE") == 0){
         tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RESTO_INT;
     } else if(strcmp(operacion, "modR") == 0){
         tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RESTO_REAL;
-    } else if(strcmp(operacion, "INT_TO_REAL") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = INT_TO_REAL;
+    } else if(strcmp(operacion, "ITR") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = ITR;
+    } else if(strcmp(operacion, "RTI") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RTI;
     }else {
         printf("Operación desconocida: %s\n", operacion);
         return false;
@@ -109,6 +111,12 @@ void imprimeTablaDeCuadruplas(TablaDeCuadruplasT tc){
                 break;
             case RESTO_REAL:
                 operador = "modR";
+                break;
+            case ITR:
+                operador = "ITR";
+                break;
+            case RTI:
+                operador = "RTI";
                 break;
             default:
                 operador = "?";

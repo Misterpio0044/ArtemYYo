@@ -15,7 +15,8 @@ typedef enum operacionCuadruplaT {
     DIVISION_REAL,
     RESTO_INT,
     RESTO_REAL,
-    INT_TO_REAL
+    ITR,
+    RTI
 } OperacionCuadruplaT;
 
 typedef struct celdaCuadrupla {
