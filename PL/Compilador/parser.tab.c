@@ -619,11 +619,11 @@ static const yytype_int16 yyrline[] =
      136,   137,   138,   139,   140,   141,   142,   151,   152,   153,
      154,   158,   159,   160,   161,   162,   165,   166,   167,   171,
      178,   179,   180,   181,   182,   186,   187,   188,   189,   236,
-     300,   305,   309,   310,   328,   329,   330,   331,   332,   333,
-     334,   335,   339,   343,   344,   345,   346,   350,   351,   352,
-     357,   358,   359,   360,   361,   362,   363,   364,   365,   366,
-     367,   368,   369,   370,   371,   375,   376,   377,   378,   379,
-     380,   381,   382,   383,   387,   388,   389,   390
+     306,   311,   315,   316,   334,   335,   336,   337,   338,   339,
+     340,   341,   345,   349,   350,   351,   352,   356,   357,   358,
+     363,   364,   365,   366,   367,   368,   369,   370,   371,   372,
+     373,   374,   375,   376,   377,   381,   382,   383,   384,   385,
+     386,   387,   388,   389,   393,   394,   395,   396
 };
 #endif
 
@@ -1394,22 +1394,22 @@ yyreduce:
             }else if((yyvsp[-2].celda).type == ENTERO && (yyvsp[0].celda).type == REAL){
                 modificarTipoT(&ts, T, REAL);
                 if(strcmp((yyvsp[-1].cadena), "+") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
+                    insertaCuadrupla(&tc, T, "ITR", (yyvsp[-2].celda).place, -1);
                     insertaCuadrupla(&tc, T, "+R", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = REAL;
                 }else if(strcmp((yyvsp[-1].cadena), "-") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
+                    insertaCuadrupla(&tc, T, "ITR", (yyvsp[-2].celda).place, -1);
                     insertaCuadrupla(&tc, T, "-R", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = REAL;
                 }
             }else if((yyvsp[-2].celda).type == REAL && (yyvsp[0].celda).type == ENTERO){
                 modificarTipoT(&ts, T, REAL);
                 if(strcmp((yyvsp[-1].cadena), "+") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
+                    insertaCuadrupla(&tc, T, "ITR", (yyvsp[0].celda).place, -1);
                     insertaCuadrupla(&tc, T, "+R", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = REAL;
                 }else if(strcmp((yyvsp[-1].cadena), "-") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
+                    insertaCuadrupla(&tc, T, "ITR", (yyvsp[0].celda).place, -1);
                     insertaCuadrupla(&tc, T, "-R", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = REAL;
                 }
@@ -1433,16 +1433,33 @@ yyreduce:
         {
             int T = newTempVariable(&ts);
             (yyval.celda).place = T;
-            if((yyvsp[-2].celda).type == ENTERO && (yyvsp[0].celda).type == ENTERO){
+            
+            if(strcmp((yyvsp[-1].cadena), "/") == 0){
+                modificarTipoT(&ts, T, REAL);
+                (yyval.celda).type = REAL;
+                if((yyvsp[-2].celda).type == ENTERO){
+                    insertaCuadrupla(&tc, T, "ITR", (yyvsp[-2].celda).place, -1);
+                }
+                if((yyvsp[0].celda).type == ENTERO){
+                    insertaCuadrupla(&tc, T, "ITR", (yyvsp[0].celda).place, -1);
+                }
+                insertaCuadrupla(&tc, T, "/", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
+            }
+            else if(strcmp((yyvsp[-1].cadena), "div") == 0){
+                modificarTipoT(&ts, T, ENTERO);
+                (yyval.celda).type = ENTERO;
+                if((yyvsp[-2].celda).type == REAL){
+                    insertaCuadrupla(&tc, T, "RTI", (yyvsp[-2].celda).place, -1);
+                }
+                if((yyvsp[0].celda).type == REAL){
+                    insertaCuadrupla(&tc, T, "RTI", (yyvsp[0].celda).place, -1);
+                }
+                insertaCuadrupla(&tc, T, "div", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
+            }
+            else if((yyvsp[-2].celda).type == ENTERO && (yyvsp[0].celda).type == ENTERO){
                 modificarTipoT(&ts, T, ENTERO);
                 if(strcmp((yyvsp[-1].cadena), "*") == 0){
                     insertaCuadrupla(&tc, T, "*E", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
-                    (yyval.celda).type = ENTERO;
-                }else if(strcmp((yyvsp[-1].cadena), "div") == 0){
-                    insertaCuadrupla(&tc, T, "div", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
-                    (yyval.celda).type = ENTERO;
-                }else if(strcmp((yyvsp[-1].cadena), "/") == 0){
-                    insertaCuadrupla(&tc, T, "/E", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = ENTERO;
                 }else if(strcmp((yyvsp[-1].cadena), "mod") == 0){
                     insertaCuadrupla(&tc, T, "modE", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
@@ -1451,30 +1468,22 @@ yyreduce:
             }else if((yyvsp[-2].celda).type == ENTERO && (yyvsp[0].celda).type == REAL){
                 modificarTipoT(&ts, T, REAL);
                 if(strcmp((yyvsp[-1].cadena), "*") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
+                    insertaCuadrupla(&tc, T, "ITR", (yyvsp[-2].celda).place, -1);
                     insertaCuadrupla(&tc, T, "*R", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = REAL;
-                }else if(strcmp((yyvsp[-1].cadena), "/") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
-                    insertaCuadrupla(&tc, T, "/R", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
-                    (yyval.celda).type = REAL;
                 }else if(strcmp((yyvsp[-1].cadena), "mod") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
+                    insertaCuadrupla(&tc, T, "ITR", (yyvsp[-2].celda).place, -1);
                     insertaCuadrupla(&tc, T, "modR", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = REAL;
                 }
             }else if((yyvsp[-2].celda).type == REAL && (yyvsp[0].celda).type == ENTERO){
                 modificarTipoT(&ts, T, REAL);
                 if(strcmp((yyvsp[-1].cadena), "*") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
+                    insertaCuadrupla(&tc, T, "ITR", (yyvsp[0].celda).place, -1);
                     insertaCuadrupla(&tc, T, "*R", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = REAL;
-                }else if(strcmp((yyvsp[-1].cadena), "/") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
-                    insertaCuadrupla(&tc, T, "/R", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
-                    (yyval.celda).type = REAL;
                 }else if(strcmp((yyvsp[-1].cadena), "mod") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
+                    insertaCuadrupla(&tc, T, "ITR", (yyvsp[0].celda).place, -1);
                     insertaCuadrupla(&tc, T, "modR", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = REAL;
                 }
@@ -1483,37 +1492,34 @@ yyreduce:
                 if(strcmp((yyvsp[-1].cadena), "*") == 0){
                     insertaCuadrupla(&tc, T, "*R", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = REAL;
-                }else if(strcmp((yyvsp[-1].cadena), "/") == 0){
-                    insertaCuadrupla(&tc, T, "/R", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
-                    (yyval.celda).type = REAL;
                 }else if(strcmp((yyvsp[-1].cadena), "mod") == 0){
                     insertaCuadrupla(&tc, T, "modR", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = REAL;
                 }
             }
         }
-#line 1496 "parser.tab.c"
+#line 1502 "parser.tab.c"
     break;
 
   case 50: /* V_exp_a: T_PARENTESIS_APERTURA V_exp_a T_PARENTESIS_CIERRE  */
-#line 301 "parser.y"
+#line 307 "parser.y"
         {
             (yyval.celda).place = (yyvsp[-1].celda).place;
             (yyval.celda).type = (yyvsp[-1].celda).type;
         }
-#line 1505 "parser.tab.c"
+#line 1511 "parser.tab.c"
     break;
 
   case 51: /* V_exp_a: V_operando  */
-#line 306 "parser.y"
+#line 312 "parser.y"
         {
             (yyval.celda) = (yyvsp[0].celda);
         }
-#line 1513 "parser.tab.c"
+#line 1519 "parser.tab.c"
     break;
 
   case 53: /* V_exp_a: T_OPERADOR_PRIO_TRES V_exp_a  */
-#line 311 "parser.y"
+#line 317 "parser.y"
         {
             int T = newTempVariable(&ts);
             modificarTipoT(&ts,T, (yyvsp[0].celda).type);
@@ -1530,35 +1536,35 @@ yyreduce:
                 insertaCuadrupla(&tc, T, "+R", (yyvsp[0].celda).place, 0);
             }
         }
-#line 1534 "parser.tab.c"
+#line 1540 "parser.tab.c"
     break;
 
   case 61: /* V_operando: V_cadena_operandos  */
-#line 336 "parser.y"
+#line 342 "parser.y"
             {
                 (yyval.celda) = (yyvsp[0].celda);
             }
-#line 1542 "parser.tab.c"
+#line 1548 "parser.tab.c"
     break;
 
   case 62: /* V_cadena_operandos: V_operando_no_booleano V_continuacion_cadena  */
-#line 340 "parser.y"
+#line 346 "parser.y"
                     {
                         (yyval.celda) = (yyvsp[-1].celda);
                     }
-#line 1550 "parser.tab.c"
+#line 1556 "parser.tab.c"
     break;
 
   case 66: /* V_operando_no_booleano: T_ID  */
-#line 347 "parser.y"
+#line 353 "parser.y"
                         {
                             (yyval.celda) = buscaSimboloPorNombre(ts, (yyvsp[0].cadena));
                         }
-#line 1558 "parser.tab.c"
+#line 1564 "parser.tab.c"
     break;
 
 
-#line 1562 "parser.tab.c"
+#line 1568 "parser.tab.c"
 
       default: break;
     }
@@ -1751,7 +1757,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 392 "parser.y"
+#line 398 "parser.y"
 
 
 int main(int argc, char **argv){

@@ -202,22 +202,22 @@ V_exp_a: V_exp_a T_OPERADOR_PRIO_TRES V_exp_a
             }else if($1.type == ENTERO && $3.type == REAL){
                 modificarTipoT(&ts, T, REAL);
                 if(strcmp($2, "+") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "ITR", $1.place, -1);
                     insertaCuadrupla(&tc, T, "+R", $1.place, $3.place);
                     $$.type = REAL;
                 }else if(strcmp($2, "-") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "ITR", $1.place, -1);
                     insertaCuadrupla(&tc, T, "-R", $1.place, $3.place);
                     $$.type = REAL;
                 }
             }else if($1.type == REAL && $3.type == ENTERO){
                 modificarTipoT(&ts, T, REAL);
                 if(strcmp($2, "+") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "ITR", $3.place, -1);
                     insertaCuadrupla(&tc, T, "+R", $1.place, $3.place);
                     $$.type = REAL;
                 }else if(strcmp($2, "-") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "ITR", $3.place, -1);
                     insertaCuadrupla(&tc, T, "-R", $1.place, $3.place);
                     $$.type = REAL;
                 }
@@ -237,16 +237,33 @@ V_exp_a: V_exp_a T_OPERADOR_PRIO_TRES V_exp_a
         {
             int T = newTempVariable(&ts);
             $$.place = T;
-            if($1.type == ENTERO && $3.type == ENTERO){
+            
+            if(strcmp($2, "/") == 0){
+                modificarTipoT(&ts, T, REAL);
+                $$.type = REAL;
+                if($1.type == ENTERO){
+                    insertaCuadrupla(&tc, T, "ITR", $1.place, -1);
+                }
+                if($3.type == ENTERO){
+                    insertaCuadrupla(&tc, T, "ITR", $3.place, -1);
+                }
+                insertaCuadrupla(&tc, T, "/", $1.place, $3.place);
+            }
+            else if(strcmp($2, "div") == 0){
+                modificarTipoT(&ts, T, ENTERO);
+                $$.type = ENTERO;
+                if($1.type == REAL){
+                    insertaCuadrupla(&tc, T, "RTI", $1.place, -1);
+                }
+                if($3.type == REAL){
+                    insertaCuadrupla(&tc, T, "RTI", $3.place, -1);
+                }
+                insertaCuadrupla(&tc, T, "div", $1.place, $3.place);
+            }
+            else if($1.type == ENTERO && $3.type == ENTERO){
                 modificarTipoT(&ts, T, ENTERO);
                 if(strcmp($2, "*") == 0){
                     insertaCuadrupla(&tc, T, "*E", $1.place, $3.place);
-                    $$.type = ENTERO;
-                }else if(strcmp($2, "div") == 0){
-                    insertaCuadrupla(&tc, T, "div", $1.place, $3.place);
-                    $$.type = ENTERO;
-                }else if(strcmp($2, "/") == 0){
-                    insertaCuadrupla(&tc, T, "/E", $1.place, $3.place);
                     $$.type = ENTERO;
                 }else if(strcmp($2, "mod") == 0){
                     insertaCuadrupla(&tc, T, "modE", $1.place, $3.place);
@@ -255,30 +272,22 @@ V_exp_a: V_exp_a T_OPERADOR_PRIO_TRES V_exp_a
             }else if($1.type == ENTERO && $3.type == REAL){
                 modificarTipoT(&ts, T, REAL);
                 if(strcmp($2, "*") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "ITR", $1.place, -1);
                     insertaCuadrupla(&tc, T, "*R", $1.place, $3.place);
                     $$.type = REAL;
-                }else if(strcmp($2, "/") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
-                    insertaCuadrupla(&tc, T, "/R", $1.place, $3.place);
-                    $$.type = REAL;
                 }else if(strcmp($2, "mod") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "ITR", $1.place, -1);
                     insertaCuadrupla(&tc, T, "modR", $1.place, $3.place);
                     $$.type = REAL;
                 }
             }else if($1.type == REAL && $3.type == ENTERO){
                 modificarTipoT(&ts, T, REAL);
                 if(strcmp($2, "*") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "ITR", $3.place, -1);
                     insertaCuadrupla(&tc, T, "*R", $1.place, $3.place);
                     $$.type = REAL;
-                }else if(strcmp($2, "/") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
-                    insertaCuadrupla(&tc, T, "/R", $1.place, $3.place);
-                    $$.type = REAL;
                 }else if(strcmp($2, "mod") == 0){
-                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "ITR", $3.place, -1);
                     insertaCuadrupla(&tc, T, "modR", $1.place, $3.place);
                     $$.type = REAL;
                 }
@@ -286,9 +295,6 @@ V_exp_a: V_exp_a T_OPERADOR_PRIO_TRES V_exp_a
                 modificarTipoT(&ts, T, REAL);
                 if(strcmp($2, "*") == 0){
                     insertaCuadrupla(&tc, T, "*R", $1.place, $3.place);
-                    $$.type = REAL;
-                }else if(strcmp($2, "/") == 0){
-                    insertaCuadrupla(&tc, T, "/R", $1.place, $3.place);
                     $$.type = REAL;
                 }else if(strcmp($2, "mod") == 0){
                     insertaCuadrupla(&tc, T, "modR", $1.place, $3.place);

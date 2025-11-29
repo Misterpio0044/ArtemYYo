@@ -1,5 +1,6 @@
 algoritmo sumacomb;
-ent n, m, uno, dos, tres: entero;
+ent n, m: real; 
+uno, dos, tres: entero;
 sal suma: entero;
 {Prec: n= N AND m = M AND M >= N >0}
 var
