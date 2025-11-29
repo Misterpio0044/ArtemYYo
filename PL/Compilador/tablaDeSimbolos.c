@@ -11,8 +11,8 @@ TablaDeSimbolosT nuevaTablaDeSimbolos() {
     
     for (int i = 0; i < 100; i++) {
         tabla.celdas[i].nombre = NULL;
-        tabla.celdas[i].id = i;
-        tabla.celdas[i].tipo = ENTERO; 
+        tabla.celdas[i].place = i;
+        tabla.celdas[i].type = ENTERO; 
     }
     
     return tabla;
@@ -27,17 +27,17 @@ bool insertaSimbolos(TablaDeSimbolosT * tabla, char * nombre, char* valor) {
         *p = (char) toupper((unsigned char)*p);
     }
     if(strcmp(valor, "ENTERO") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].tipo = ENTERO;
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].type = ENTERO;
         tabla->celdas[tabla->cantidadDeCeldasLlenas].valor.literalNumericoT.tipoDelValor = ENTERO;
     } else if(strcmp(valor, "REAL") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].tipo = REAL;
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].type = REAL;
         tabla->celdas[tabla->cantidadDeCeldasLlenas].valor.literalNumericoT.tipoDelValor = REAL;
     } else if(strcmp(valor, "BOOLEANO") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].tipo = BOOLEANO;
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].type = BOOLEANO;
     } else if(strcmp(valor, "CADENA") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].tipo = CADENA;
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].type = CADENA;
     } else if(strcmp(valor, "CARACTER") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].tipo = CARACTER;
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].type = CARACTER;
     } else {
         printf("Tipo desconocido: %s\n", valor);
         return false;
@@ -57,15 +57,15 @@ void imprimeTablaDeSimbolos(TablaDeSimbolosT ts){
         return;
     }
     
-    printf("ID\t\tNombre\t\tTipo\t\tValor\n");
-    printf("--\t\t------\t\t----\t\t-----\n");
+    printf("Place\t\tNombre\t\tType\t\tValor\n");
+    printf("-----\t\t------\t\t----\t\t-----\n");
     
     while (i < cantidad) {
-        printf("%d\t\t", ts.celdas[i].id);
+        printf("%d\t\t", ts.celdas[i].place);
         printf("%s\t\t", ts.celdas[i].nombre);
         
-        // Imprimir según el tipo
-        switch (ts.celdas[i].tipo) {
+        // Imprimir según el type
+        switch (ts.celdas[i].type) {
             case ENTERO:
                 printf("ENTERO\t\t%d\n", ts.celdas[i].valor.literalNumericoT.valor.valorEntero);
                 break;
@@ -111,38 +111,36 @@ int newTempVariable(TablaDeSimbolosT * ts) {
     return tempId;
 }
 
-void modificarTipoT(TablaDeSimbolosT * ts, int id, NombreDeTipoT nuevoTipo) {
+void modificarTipoT(TablaDeSimbolosT * ts, int place, NombreDeTipoT nuevoType) {
     
-    extern TablaDeSimbolosT ts;
-    
-    if (id < 0 || id >= ts->cantidadDeCeldasLlenas) {
-        printf("ID de variable temporal inválido: %d\n", id);
+    if (place < 0 || place >= ts->cantidadDeCeldasLlenas) {
+        printf("Place de variable temporal inválido: %d\n", place);
         return;
     }
     
-    ts->celdas[id].tipo = nuevoTipo;
+    ts->celdas[place].type = nuevoType;
     
-    // Inicializar el valor según el nuevo tipo
-    switch (nuevoTipo) {
+    // Inicializar el valor según el nuevo type
+    switch (nuevoType) {
         case ENTERO:
-            ts->celdas[id].valor.literalNumericoT.tipoDelValor = ENTERO;
-            ts->celdas[id].valor.literalNumericoT.valor.valorEntero = 0;
+            ts->celdas[place].valor.literalNumericoT.tipoDelValor = ENTERO;
+            ts->celdas[place].valor.literalNumericoT.valor.valorEntero = 0;
             break;
         case REAL:
-            ts->celdas[id].valor.literalNumericoT.tipoDelValor = REAL;
-            ts->celdas[id].valor.literalNumericoT.valor.valorReal = 0.0f;
+            ts->celdas[place].valor.literalNumericoT.tipoDelValor = REAL;
+            ts->celdas[place].valor.literalNumericoT.valor.valorReal = 0.0f;
             break;
         case BOOLEANO:
-            ts->celdas[id].valor.literalBooleanoT.BOOLEANO = BOOLEANO;
-            ts->celdas[id].valor.literalBooleanoT.valor = FALSO;
+            ts->celdas[place].valor.literalBooleanoT.BOOLEANO = BOOLEANO;
+            ts->celdas[place].valor.literalBooleanoT.valor = FALSO;
             break;
         case CADENA:
-            ts->celdas[id].valor.literalCadenaT.CADENA = CADENA;
-            ts->celdas[id].valor.literalCadenaT.valor = NULL;
+            ts->celdas[place].valor.literalCadenaT.CADENA = CADENA;
+            ts->celdas[place].valor.literalCadenaT.valor = NULL;
             break;
         case CARACTER:
-            ts->celdas[id].valor.literalCaracterT.CARACTER = CARACTER;
-            ts->celdas[id].valor.literalCaracterT.valor = '\0';
+            ts->celdas[place].valor.literalCaracterT.CARACTER = CARACTER;
+            ts->celdas[place].valor.literalCaracterT.valor = '\0';
             break;
     }
 }

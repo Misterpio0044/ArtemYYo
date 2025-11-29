@@ -6,8 +6,8 @@
 
 typedef struct celda {
 	char * nombre;
-	int id;
-	NombreDeTipoT tipo;
+	int place;
+	NombreDeTipoT type;
 	LiteralSimboloT valor;
 } Celda;
 
@@ -20,5 +20,7 @@ TablaDeSimbolosT nuevaTablaDeSimbolos(void);
 bool insertaSimbolos(TablaDeSimbolosT *, char *, char *);
 void imprimeTablaDeSimbolos(TablaDeSimbolosT);
 Celda buscaSimboloPorNombre(TablaDeSimbolosT, char *);
+int newTempVariable(TablaDeSimbolosT * ts);
+void modificarTipoT(TablaDeSimbolosT * ts, int place, NombreDeTipoT nuevoType);
 
 #endif

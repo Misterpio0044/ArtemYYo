@@ -1289,7 +1289,7 @@ YY_RULE_SETUP
 case 61:
 YY_RULE_SETUP
 #line 179 "scanner.l"
-{ return T_ERROR; }
+{ /* No devolvemos nada */ }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP

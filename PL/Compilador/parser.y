@@ -15,6 +15,8 @@ TablaDeSimbolosT ts;
 TablaDeCuadruplasT tc;
 ColaDeStrings colaTempVariables;
 
+// #define YYDEBUG 1
+
 %}
 
 %union {
@@ -35,7 +37,6 @@ ColaDeStrings colaTempVariables;
 %type <celda> V_exp_a
 
 %token T_ASIGNACION
-%token T_COMENTARIO 
 %token T_COMPOSICION_SECUENCIAL
 %token T_CONTINUAR
 %token T_CORCHETE_APERTURA
@@ -70,7 +71,7 @@ ColaDeStrings colaTempVariables;
 %token T_OPERADOR_DEF_TIPO
 %token T_OPERADOR_NO
 %token T_OPERADOR_O
-%token <cadena>T_OPERADOR_PRIO_DOS
+%token <cadena> T_OPERADOR_PRIO_DOS
 %token <cadena> T_OPERADOR_PRIO_TRES
 %token T_OPERADOR_RELACIONAL
 %token T_OPERADOR_Y
@@ -93,7 +94,6 @@ ColaDeStrings colaTempVariables;
 %token T_TERM_TIPO
 %token T_TERM_TUPLA
 %token T_TERM_VAR
-%token T_ERROR
 
 %left T_OPERADOR_O
 %left T_OPERADOR_Y
@@ -135,7 +135,7 @@ V_declaracion_var: T_DECL_VAR V_lista_d_var T_TERM_VAR T_COMPOSICION_SECUENCIAL;
 V_lista_d_tipo: T_ID T_IGUAL V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_d_tipo 
               | ;
 V_d_tipo: T_DECL_TUPLA V_lista_campos T_TERM_TUPLA 
-        | T_DECL_TABLA T_CORCHETE_APERTURA V_expresion_t T_SUBRANGO_TABLA V_expresion_t T_CORCHETE_CIERRE T_DE V_d_tipo;
+        | T_DECL_TABLA T_CORCHETE_APERTURA V_expresion_t T_SUBRANGO_TABLA V_expresion_t T_CORCHETE_CIERRE T_DE V_d_tipo
         | T_ID 
         | V_expresion_t T_SUBRANGO_TABLA V_expresion_t 
         | T_REF V_d_tipo 
@@ -163,15 +163,15 @@ V_lista_d_const: T_ID T_IGUAL T_LITERAL_NUMERICO T_COMPOSICION_SECUENCIAL V_list
 
  // Definicion lista de variables
 V_lista_d_var: V_lista_id T_OPERADOR_DEF_TIPO V_d_tipo T_COMPOSICION_SECUENCIAL V_lista_d_var 
-             | 
+             | ;
 V_lista_id: T_ID T_SEPARADOR V_lista_id
             { 
-                pideTurnoColaDeStrings(&colaTempVariables, $1); 
+                pideTurnoColaDeStrings(&colaTempVariables, $1);
             }
-          | T_ID
-          { 
-            pideTurnoColaDeStrings(&colaTempVariables, $1); 
-          }
+            | T_ID
+            { 
+                pideTurnoColaDeStrings(&colaTempVariables, $1);
+            };
 
 
  // Definicion de entradas y salidas
@@ -188,34 +188,143 @@ V_expresion: V_exp_a
             | V_funcion_ll;
 V_exp_a: V_exp_a T_OPERADOR_PRIO_TRES V_exp_a
         {
-            insertaCuadrupla(&tc,$2,$1.id,$3.id);
-        };
+            int T = newTempVariable(&ts);
+            $$.place = T;
+            if($1.type == ENTERO && $3.type == ENTERO){
+                modificarTipoT(&ts, T, ENTERO);
+                if(strcmp($2, "+") == 0){
+                    insertaCuadrupla(&tc, T, "+E", $1.place, $3.place);
+                    $$.type = ENTERO;
+                }else if(strcmp($2, "-") == 0){
+                    insertaCuadrupla(&tc, T, "-E", $1.place, $3.place);
+                    $$.type = ENTERO;
+                }
+            }else if($1.type == ENTERO && $3.type == REAL){
+                modificarTipoT(&ts, T, REAL);
+                if(strcmp($2, "+") == 0){
+                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "+R", $1.place, $3.place);
+                    $$.type = REAL;
+                }else if(strcmp($2, "-") == 0){
+                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "-R", $1.place, $3.place);
+                    $$.type = REAL;
+                }
+            }else if($1.type == REAL && $3.type == ENTERO){
+                modificarTipoT(&ts, T, REAL);
+                if(strcmp($2, "+") == 0){
+                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "+R", $1.place, $3.place);
+                    $$.type = REAL;
+                }else if(strcmp($2, "-") == 0){
+                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "-R", $1.place, $3.place);
+                    $$.type = REAL;
+                }
+            }else if($1.type == REAL && $3.type == REAL){
+                modificarTipoT(&ts, T, REAL);
+                if(strcmp($2, "+") == 0){
+                    insertaCuadrupla(&tc, T, "+R", $1.place, $3.place);
+                    $$.type = REAL;
+                }else if(strcmp($2, "-") == 0){
+                    insertaCuadrupla(&tc, T, "-R", $1.place, $3.place);
+                    $$.type = REAL;
+                }
+            }
+
+        }
         | V_exp_a T_OPERADOR_PRIO_DOS V_exp_a 
         {
-            insertaCuadrupla(&tc,$2,$1.id,$3.id);
-        };
+            int T = newTempVariable(&ts);
+            $$.place = T;
+            if($1.type == ENTERO && $3.type == ENTERO){
+                modificarTipoT(&ts, T, ENTERO);
+                if(strcmp($2, "*") == 0){
+                    insertaCuadrupla(&tc, T, "*E", $1.place, $3.place);
+                    $$.type = ENTERO;
+                }else if(strcmp($2, "div") == 0){
+                    insertaCuadrupla(&tc, T, "div", $1.place, $3.place);
+                    $$.type = ENTERO;
+                }else if(strcmp($2, "/") == 0){
+                    insertaCuadrupla(&tc, T, "/E", $1.place, $3.place);
+                    $$.type = ENTERO;
+                }else if(strcmp($2, "mod") == 0){
+                    insertaCuadrupla(&tc, T, "modE", $1.place, $3.place);
+                    $$.type = ENTERO;
+                }
+            }else if($1.type == ENTERO && $3.type == REAL){
+                modificarTipoT(&ts, T, REAL);
+                if(strcmp($2, "*") == 0){
+                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "*R", $1.place, $3.place);
+                    $$.type = REAL;
+                }else if(strcmp($2, "/") == 0){
+                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "/R", $1.place, $3.place);
+                    $$.type = REAL;
+                }else if(strcmp($2, "mod") == 0){
+                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "modR", $1.place, $3.place);
+                    $$.type = REAL;
+                }
+            }else if($1.type == REAL && $3.type == ENTERO){
+                modificarTipoT(&ts, T, REAL);
+                if(strcmp($2, "*") == 0){
+                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "*R", $1.place, $3.place);
+                    $$.type = REAL;
+                }else if(strcmp($2, "/") == 0){
+                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "/R", $1.place, $3.place);
+                    $$.type = REAL;
+                }else if(strcmp($2, "mod") == 0){
+                    insertaCuadrupla(&tc, T, "INT_TO_REAL", $1.place, $3.place);
+                    insertaCuadrupla(&tc, T, "modR", $1.place, $3.place);
+                    $$.type = REAL;
+                }
+            }else if($1.type == REAL && $3.type == REAL){
+                modificarTipoT(&ts, T, REAL);
+                if(strcmp($2, "*") == 0){
+                    insertaCuadrupla(&tc, T, "*R", $1.place, $3.place);
+                    $$.type = REAL;
+                }else if(strcmp($2, "/") == 0){
+                    insertaCuadrupla(&tc, T, "/R", $1.place, $3.place);
+                    $$.type = REAL;
+                }else if(strcmp($2, "mod") == 0){
+                    insertaCuadrupla(&tc, T, "modR", $1.place, $3.place);
+                    $$.type = REAL;
+                }
+            }
+        }
 
         | T_PARENTESIS_APERTURA V_exp_a T_PARENTESIS_CIERRE
         {
-            $$.id = $2.id;
-            $$.tipo = $2.tipo;
-        };
+            $$.place = $2.place;
+            $$.type = $2.type;
+        }
         | V_operando
         {
             $$ = $1;
-        };
+        }
         | T_LITERAL_NUMERICO
         | T_OPERADOR_PRIO_TRES V_exp_a
         {
             int T = newTempVariable(&ts);
-            modificarTipoT(&ts,T, $1.tipo);
-            $$.id = T;
-            if($1.tipo == TIPO_ENTERO){
-                insertaCuadrupla(&tc,"-E", $2.id, T);
-            } else if($1.tipo == TIPO_REAL){
-                insertaCuadrupla(&tc,"-R", $2.id, T);
+            modificarTipoT(&ts,T, $2.type);
+            $$.place = T;
+
+            if ($2.type == ENTERO) {
+                insertaCuadrupla(&tc, T, "-E", $2.place, 0);
+            } else if ($2.type == REAL) {
+                insertaCuadrupla(&tc, T, "-R", $2.place, 0);
+            }
+            if ($2.type == ENTERO) {
+                insertaCuadrupla(&tc, T, "+E", $2.place, 0);
+            } else if ($2.type == REAL) {
+                insertaCuadrupla(&tc, T, "+R", $2.place, 0);
             }
         };
+
 V_exp_b: V_exp_b T_OPERADOR_Y V_exp_b
         | V_exp_b T_OPERADOR_O V_exp_b
         | T_OPERADOR_NO V_exp_b
@@ -237,7 +346,7 @@ V_continuacion_cadena: T_PUNTO V_operando_no_booleano V_continuacion_cadena
 V_operando_no_booleano: T_ID
                         {
                             $$ = buscaSimboloPorNombre(ts, $1);
-                        };
+                        }
           | V_operando T_CORCHETE_APERTURA V_expresion T_CORCHETE_CIERRE
           | V_operando T_REF;
 V_operando_booleano: T_ID_BOOLEANO;
@@ -283,6 +392,9 @@ V_l_ll: V_expresion T_SEPARADOR V_l_ll
 %%
 
 int main(int argc, char **argv){
+	/* #if defined YYDEBUG
+	yydebug = 1;
+	#endif */
 	++argv, --argc;
 	if (argc > 0)
 		yyin = fopen(argv[0], "r");
