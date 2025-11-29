@@ -1,8 +1,8 @@
 compilador: parser.tab.c lex.yy.o literal.o tablaDeSimbolos.o colaDeStrings.o tablaDeCuadruplas.o literal.h nombresDeTipos.h tablaDeSimbolos.h
-	gcc parser.tab.c lex.yy.o tablaDeSimbolos.o literal.o colaDeStrings.o tablaDeCuadruplas.o -lfl -o compilador
+	gcc parser.tab.c lex.yy.o tablaDeSimbolos.o literal.o colaDeStrings.o tablaDeCuadruplas.o -lfl -lm -o compilador
 
 parser.tab.c parser.tab.h: parser.y literal.h nombresDeTipos.h tablaDeSimbolos.h
-	bison -d -v parser.y
+	bison -d -v -t parser.y
 
 lex.yy.o: scanner.l parser.tab.h literal.h nombresDeTipos.h tablaDeSimbolos.h
 	flex scanner.l

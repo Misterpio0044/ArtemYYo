@@ -176,7 +176,7 @@ ER_literal_real {ER_cifra}{ER_cifra}*\.{ER_cifra}{ER_cifra}*((e|E)(\+|-)?{ER_cif
                                 return T_ID;
                             }
 
-.                           { return T_ERROR; }
+.                           { /* No devolvemos nada */ }
 
 
 

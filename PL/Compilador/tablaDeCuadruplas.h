@@ -14,7 +14,8 @@ typedef enum operacionCuadruplaT {
     DIVISION_INT,
     DIVISION_REAL,
     RESTO_INT,
-    RESTO_REAL
+    RESTO_REAL,
+    INT_TO_REAL
 } OperacionCuadruplaT;
 
 typedef struct celdaCuadrupla {
@@ -31,7 +32,7 @@ typedef struct tablaDeCuadruplasT {
 } TablaDeCuadruplasT;
 
 TablaDeCuadruplasT nuevaTablaDeCuadruplas(void);
-bool insertaCuadrupla(TablaDeCuadruplasT *, char *, int, int);
+bool insertaCuadrupla(TablaDeCuadruplasT *, int, char *, int, int);
 void imprimeTablaDeCuadruplas(TablaDeCuadruplasT);
 
 #endif

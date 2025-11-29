@@ -20,7 +20,7 @@ TablaDeCuadruplasT nuevaTablaDeCuadruplas() {
     return tabla;
 }
 
-bool insertaCuadrupla(TablaDeCuadruplasT * tabla, char * operacion, int operando1, int operando2) {
+bool insertaCuadrupla(TablaDeCuadruplasT * tabla, int id,  char * operacion, int operando1, int operando2) {
     if (tabla->cantidadDeCeldasLlenas >= 100) {
         printf("La tabla de cuádruplas está llena\n");
         return false;
@@ -48,7 +48,9 @@ bool insertaCuadrupla(TablaDeCuadruplasT * tabla, char * operacion, int operando
         tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RESTO_INT;
     } else if(strcmp(operacion, "modR") == 0){
         tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RESTO_REAL;
-    } else {
+    } else if(strcmp(operacion, "INT_TO_REAL") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = INT_TO_REAL;
+    }else {
         printf("Operación desconocida: %s\n", operacion);
         return false;
     }
