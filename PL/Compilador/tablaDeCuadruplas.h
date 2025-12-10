@@ -16,7 +16,16 @@ typedef enum operacionCuadruplaT {
     RESTO_INT,
     RESTO_REAL,
     ITR,
-    RTI
+    RTI,
+    OP_BOOL_Y,
+    OP_BOOL_O,
+    OP_BOOL_NO,
+    OP_BOOL_MENOR,
+    OP_BOOL_MAYOR,
+    OP_BOOL_MENORIGUAL,
+    OP_BOOL_MAYORIGUAL,
+    OP_BOOL_DISTINTO,
+    OP_BOOL_IGUAL
 } OperacionCuadruplaT;
 
 typedef struct celdaCuadrupla {

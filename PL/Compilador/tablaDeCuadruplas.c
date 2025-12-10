@@ -52,6 +52,24 @@ bool insertaCuadrupla(TablaDeCuadruplasT * tabla, int id,  char * operacion, int
         tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = ITR;
     } else if(strcmp(operacion, "RTI") == 0){
         tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RTI;
+    } else if(strcmp(operacion, "Y") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_Y;
+    } else if(strcmp(operacion, "O") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_O;
+    } else if(strcmp(operacion, "NO") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_NO;
+    } else if(strcmp(operacion, "<") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_MENOR;
+    } else if(strcmp(operacion, ">") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_MAYOR;
+    } else if(strcmp(operacion, "<=") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_MENORIGUAL;
+    } else if(strcmp(operacion, ">=") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_MAYORIGUAL;
+    } else if(strcmp(operacion, "!=") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_DISTINTO;
+    } else if(strcmp(operacion, "=") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_IGUAL;
     }else {
         printf("Operación desconocida: %s\n", operacion);
         return false;
@@ -117,6 +135,27 @@ void imprimeTablaDeCuadruplas(TablaDeCuadruplasT tc){
                 break;
             case RTI:
                 operador = "RTI";
+                break;
+            case OP_BOOL_Y:
+                operador = "Y";
+                break;
+            case OP_BOOL_MENOR:
+                operador = "<";
+                break;
+            case OP_BOOL_MAYOR:
+                operador = ">";
+                break;
+            case OP_BOOL_MENORIGUAL:
+                operador = "<=";
+                break;
+            case OP_BOOL_MAYORIGUAL:
+                operador = ">=";
+                break;
+            case OP_BOOL_DISTINTO:
+                operador = "!=";
+                break;
+            case OP_BOOL_IGUAL:
+                operador = "=";
                 break;
             default:
                 operador = "?";

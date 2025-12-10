@@ -614,16 +614,16 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   114,   114,   115,   116,   117,   118,   119,   120,   120,
-     121,   122,   123,   124,   125,   126,   130,   131,   132,   135,
-     136,   137,   138,   139,   140,   141,   142,   151,   152,   153,
-     154,   158,   159,   160,   161,   162,   165,   166,   167,   171,
-     178,   179,   180,   181,   182,   186,   187,   188,   189,   236,
-     306,   311,   315,   316,   334,   335,   336,   337,   338,   339,
-     340,   341,   345,   349,   350,   351,   352,   356,   357,   358,
-     363,   364,   365,   366,   367,   368,   369,   370,   371,   372,
-     373,   374,   375,   376,   377,   381,   382,   383,   384,   385,
-     386,   387,   388,   389,   393,   394,   395,   396
+       0,   116,   116,   117,   118,   119,   120,   121,   122,   122,
+     123,   124,   125,   126,   127,   128,   132,   133,   134,   137,
+     138,   139,   140,   141,   142,   143,   144,   153,   154,   155,
+     156,   160,   161,   162,   163,   164,   167,   168,   169,   173,
+     180,   181,   182,   183,   184,   188,   189,   190,   191,   238,
+     308,   313,   317,   318,   336,   349,   350,   351,   352,   353,
+     362,   364,   368,   372,   373,   374,   375,   379,   380,   381,
+     386,   387,   388,   389,   390,   391,   392,   393,   394,   395,
+     396,   397,   398,   399,   400,   404,   405,   406,   407,   408,
+     409,   410,   411,   412,   416,   417,   418,   419
 };
 #endif
 
@@ -1349,7 +1349,7 @@ yyreduce:
   switch (yyn)
     {
   case 26: /* V_d_tipo: T_NOMBRE_TIPO  */
-#line 143 "parser.y"
+#line 145 "parser.y"
         {
             char* aux;
             while(!esNulaColaDeStrings(colaTempVariables)){
@@ -1362,7 +1362,7 @@ yyreduce:
     break;
 
   case 38: /* V_lista_id: T_ID T_SEPARADOR V_lista_id  */
-#line 168 "parser.y"
+#line 170 "parser.y"
             { 
                 pideTurnoColaDeStrings(&colaTempVariables, (yyvsp[-2].cadena));
             }
@@ -1370,7 +1370,7 @@ yyreduce:
     break;
 
   case 39: /* V_lista_id: T_ID  */
-#line 172 "parser.y"
+#line 174 "parser.y"
             { 
                 pideTurnoColaDeStrings(&colaTempVariables, (yyvsp[0].cadena));
             }
@@ -1378,7 +1378,7 @@ yyreduce:
     break;
 
   case 48: /* V_exp_a: V_exp_a T_OPERADOR_PRIO_TRES V_exp_a  */
-#line 190 "parser.y"
+#line 192 "parser.y"
         {
             int T = newTempVariable(&ts);
             (yyval.celda).place = T;
@@ -1429,7 +1429,7 @@ yyreduce:
     break;
 
   case 49: /* V_exp_a: V_exp_a T_OPERADOR_PRIO_DOS V_exp_a  */
-#line 237 "parser.y"
+#line 239 "parser.y"
         {
             int T = newTempVariable(&ts);
             (yyval.celda).place = T;
@@ -1502,7 +1502,7 @@ yyreduce:
     break;
 
   case 50: /* V_exp_a: T_PARENTESIS_APERTURA V_exp_a T_PARENTESIS_CIERRE  */
-#line 307 "parser.y"
+#line 309 "parser.y"
         {
             (yyval.celda).place = (yyvsp[-1].celda).place;
             (yyval.celda).type = (yyvsp[-1].celda).type;
@@ -1511,7 +1511,7 @@ yyreduce:
     break;
 
   case 51: /* V_exp_a: V_operando  */
-#line 312 "parser.y"
+#line 314 "parser.y"
         {
             (yyval.celda) = (yyvsp[0].celda);
         }
@@ -1519,7 +1519,7 @@ yyreduce:
     break;
 
   case 53: /* V_exp_a: T_OPERADOR_PRIO_TRES V_exp_a  */
-#line 317 "parser.y"
+#line 319 "parser.y"
         {
             int T = newTempVariable(&ts);
             modificarTipoT(&ts,T, (yyvsp[0].celda).type);
@@ -1539,32 +1539,62 @@ yyreduce:
 #line 1540 "parser.tab.c"
     break;
 
+  case 54: /* V_exp_b: V_exp_b T_OPERADOR_Y V_exp_b  */
+#line 337 "parser.y"
+        {
+            printf("lol1.1\n");
+            int T = newTempVariable(&ts);
+            modificarTipoT(&ts,T, BOOLEANO);
+            (yyval.celda).place = T;
+
+            if ((yyvsp[-2].celda).type != BOOLEANO || (yyvsp[0].celda).type != BOOLEANO){
+                printf("ERROR: NO SE PUEDE HACER ESTO. Continuando...\n");
+            }
+            insertaCuadrupla(&tc, T, "Y", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
+            printf("lol1\n");
+        }
+#line 1557 "parser.tab.c"
+    break;
+
+  case 59: /* V_exp_b: V_expresion T_OPERADOR_RELACIONAL V_expresion  */
+#line 354 "parser.y"
+        {
+            printf("lol2\n");
+            int T = newTempVariable(&ts);
+            modificarTipoT(&ts,T, BOOLEANO);
+            (yyval.celda).place = T;
+            insertaCuadrupla(&tc, T, (yyvsp[-1].cadena), (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
+            printf("lol2.1\n");
+        }
+#line 1570 "parser.tab.c"
+    break;
+
   case 61: /* V_operando: V_cadena_operandos  */
-#line 342 "parser.y"
+#line 365 "parser.y"
             {
                 (yyval.celda) = (yyvsp[0].celda);
             }
-#line 1548 "parser.tab.c"
+#line 1578 "parser.tab.c"
     break;
 
   case 62: /* V_cadena_operandos: V_operando_no_booleano V_continuacion_cadena  */
-#line 346 "parser.y"
+#line 369 "parser.y"
                     {
                         (yyval.celda) = (yyvsp[-1].celda);
                     }
-#line 1556 "parser.tab.c"
+#line 1586 "parser.tab.c"
     break;
 
   case 66: /* V_operando_no_booleano: T_ID  */
-#line 353 "parser.y"
+#line 376 "parser.y"
                         {
                             (yyval.celda) = buscaSimboloPorNombre(ts, (yyvsp[0].cadena));
                         }
-#line 1564 "parser.tab.c"
+#line 1594 "parser.tab.c"
     break;
 
 
-#line 1568 "parser.tab.c"
+#line 1598 "parser.tab.c"
 
       default: break;
     }
@@ -1757,7 +1787,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 398 "parser.y"
+#line 421 "parser.y"
 
 
 int main(int argc, char **argv){
