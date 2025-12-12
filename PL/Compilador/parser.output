@@ -192,8 +192,8 @@ Terminales con las reglas donde aparecen
     T_OPERADOR_O (292) 54
     T_OPERADOR_PRIO_DOS <cadena> (293) 48
     T_OPERADOR_PRIO_TRES <cadena> (294) 47 52
-    T_OPERADOR_RELACIONAL (295) 58
-    T_OPERADOR_Y (296) 53
+    T_OPERADOR_RELACIONAL <cadena> (295) 58
+    T_OPERADOR_Y <cadena> (296) 53
     T_PARENTESIS_APERTURA (297) 49 59 86 87 93 94
     T_PARENTESIS_CIERRE (298) 49 59 86 87 93 94
     T_POST (299) 3
@@ -279,13 +279,13 @@ No terminales con las reglas donde aparecen
     V_decl_sal (81)
         on left: 43
         on right: 40 41
-    V_expresion (82)
+    V_expresion <celda> (82)
         on left: 44 45 46
         on right: 26 58 66 76 77 78 82 83 85 95 96
     V_exp_a <celda> (83)
         on left: 47 48 49 50 51 52
         on right: 44 47 48 49 52
-    V_exp_b (84)
+    V_exp_b <celda> (84)
         on left: 53 54 55 56 57 58 59
         on right: 45 53 54 55 59
     V_operando <celda> (85)

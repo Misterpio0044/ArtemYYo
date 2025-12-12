@@ -123,7 +123,10 @@ ER_literal_real {ER_cifra}{ER_cifra}*\.{ER_cifra}{ER_cifra}*((e|E)(\+|-)?{ER_cif
                               yylval.cadena = strdup(yytext);
                               return T_OPERADOR_PRIO_TRES; 
                             }
-{ER_operador_relacional}    { return T_OPERADOR_RELACIONAL; }
+{ER_operador_relacional}    { 
+                                yylval.cadena = strdup(yytext);
+                                return T_OPERADOR_RELACIONAL;     
+                            }
 {ER_operador_y}             { return T_OPERADOR_Y; }
 {ER_parentesis_aperura}     { return T_PARENTESIS_APERTURA; }
 {ER_parentesis_cierre}      { return T_PARENTESIS_CIERRE; }

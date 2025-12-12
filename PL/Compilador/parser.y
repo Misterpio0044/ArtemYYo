@@ -35,6 +35,8 @@ ColaDeStrings colaTempVariables;
 %type <celda> V_cadena_operandos
 %type <celda> V_operando
 %type <celda> V_exp_a
+%type <celda> V_exp_b
+%type <celda> V_expresion
 
 %token T_ASIGNACION
 %token T_COMPOSICION_SECUENCIAL
@@ -73,8 +75,8 @@ ColaDeStrings colaTempVariables;
 %token T_OPERADOR_O
 %token <cadena> T_OPERADOR_PRIO_DOS
 %token <cadena> T_OPERADOR_PRIO_TRES
-%token T_OPERADOR_RELACIONAL
-%token T_OPERADOR_Y
+%token <cadena> T_OPERADOR_RELACIONAL
+%token <cadena> T_OPERADOR_Y
 %token T_PARENTESIS_APERTURA
 %token T_PARENTESIS_CIERRE
 %token T_POST
@@ -331,13 +333,32 @@ V_exp_a: V_exp_a T_OPERADOR_PRIO_TRES V_exp_a
             }
         };
 
-V_exp_b: V_exp_b T_OPERADOR_Y V_exp_b
+V_exp_b: V_exp_b T_OPERADOR_Y V_exp_b 
+        {
+            printf("lol1.1\n");
+            int T = newTempVariable(&ts);
+            modificarTipoT(&ts,T, BOOLEANO);
+            $$.place = T;
+
+            if ($1.type != BOOLEANO || $3.type != BOOLEANO){
+                printf("ERROR: NO SE PUEDE HACER ESTO. Continuando...\n");
+            }
+            insertaCuadrupla(&tc, T, "Y", $1.place, $3.place);
+            printf("lol1\n");
+        };
         | V_exp_b T_OPERADOR_O V_exp_b
         | T_OPERADOR_NO V_exp_b
         | V_operando_booleano
         | T_LITERAL_BOOLEANO
         | V_expresion T_OPERADOR_RELACIONAL V_expresion
+        {
+            int T = newTempVariable(&ts);
+            modificarTipoT(&ts,T, BOOLEANO);
+            $$.place = T;
+            insertaCuadrupla(&tc, T, $2, $1.place, $3.place);
+        };
         | T_PARENTESIS_APERTURA V_exp_b T_PARENTESIS_CIERRE;
+
 V_operando: V_cadena_operandos
             {
                 $$ = $1;
