@@ -50,26 +50,22 @@ bool insertaCuadrupla(TablaDeCuadruplasT * tabla, int id,  char * operacion, int
         tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RESTO_REAL;
     } else if(strcmp(operacion, "ITR") == 0){
         tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = ITR;
-    } else if(strcmp(operacion, "RTI") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = RTI;
-    } else if(strcmp(operacion, "Y") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_Y;
-    } else if(strcmp(operacion, "O") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_O;
-    } else if(strcmp(operacion, "NO") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_NO;
-    } else if(strcmp(operacion, "<") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_MENOR;
+    } 
+    // Operadores relacionales para saltos condicionales
+    else if(strcmp(operacion, "<") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = IF_GOTO_MENOR;
     } else if(strcmp(operacion, ">") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_MAYOR;
-    } else if(strcmp(operacion, "<=") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_MENORIGUAL;
-    } else if(strcmp(operacion, ">=") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_MAYORIGUAL;
-    } else if(strcmp(operacion, "!=") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_DISTINTO;
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = IF_GOTO_MAYOR;
     } else if(strcmp(operacion, "=") == 0){
-        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = OP_BOOL_IGUAL;
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = IF_GOTO_IGUAL;
+    } else if(strcmp(operacion, "!=") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = IF_GOTO_NO_IGUAL;
+    } else if(strcmp(operacion, "<=") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = IF_GOTO_MENOR_IGUAL;
+    } else if(strcmp(operacion, ">=") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = IF_GOTO_MAYOR_IGUAL;
+    } else if(strcmp(operacion, "goto") == 0){
+        tabla->celdas[tabla->cantidadDeCeldasLlenas].operacion = GOTO;
     }else {
         printf("Operación desconocida: %s\n", operacion);
         return false;
@@ -94,8 +90,8 @@ void imprimeTablaDeCuadruplas(TablaDeCuadruplasT tc){
         return;
     }
     
-    printf("Operacion\t\tOperando1\tOperando2\tResultado\n");
-    printf("------\t\t\t----\t\t-----\t\t---------\n");
+    printf("%-18s %-15s %-15s %-15s\n", "Operacion", "Operando1", "Operando2", "Resultado");
+    printf("%-18s %-15s %-15s %-15s\n", "----------", "-----------", "-----------", "----------");
     
     while (i < cantidad) {
         char* operador;
@@ -133,37 +129,31 @@ void imprimeTablaDeCuadruplas(TablaDeCuadruplasT tc){
             case ITR:
                 operador = "ITR";
                 break;
-            case RTI:
-                operador = "RTI";
+            case IF_GOTO_MENOR:
+                operador = "if<goto";
                 break;
-            case OP_BOOL_Y:
-                operador = "Y";
+            case IF_GOTO_MAYOR:
+                operador = "if>goto";
                 break;
-            case OP_BOOL_MENOR:
-                operador = "<";
+            case IF_GOTO_IGUAL:
+                operador = "if==goto";
                 break;
-            case OP_BOOL_MAYOR:
-                operador = ">";
+            case IF_GOTO_NO_IGUAL:
+                operador = "if!=goto";
                 break;
-            case OP_BOOL_MENORIGUAL:
-                operador = "<=";
+            case IF_GOTO_MENOR_IGUAL:
+                operador = "if<=goto";
                 break;
-            case OP_BOOL_MAYORIGUAL:
-                operador = ">=";
+            case IF_GOTO_MAYOR_IGUAL:
+                operador = "if>=goto";
                 break;
-            case OP_BOOL_DISTINTO:
-                operador = "!=";
-                break;
-            case OP_BOOL_IGUAL:
-                operador = "=";
+            case GOTO:
+                operador = "goto";
                 break;
             default:
                 operador = "?";
         }
-        printf("%s\t\t\t", operador);
-        printf("%d\t\t", tc.celdas[i].operando1);
-        printf("%d\t\t", tc.celdas[i].operando2);
-        printf("%d\n", tc.celdas[i].resultado);
+        printf("%-18s %-15d %-15d %-15d\n", operador, tc.celdas[i].operando1, tc.celdas[i].operando2, tc.celdas[i].resultado);
         i++;
     }
 
@@ -175,11 +165,9 @@ lista id → identificador, lista id | identificador
 hacer array de cadena de caracteres
 */
 
+}
 
-
-
-
-
-
-
+// Devuelve el índice de la siguiente cuádrupla a generar
+int getNextQuad(TablaDeCuadruplasT * tabla) {
+    return tabla->cantidadDeCeldasLlenas;
 }

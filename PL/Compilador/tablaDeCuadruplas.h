@@ -16,16 +16,13 @@ typedef enum operacionCuadruplaT {
     RESTO_INT,
     RESTO_REAL,
     ITR,
-    RTI,
-    OP_BOOL_Y,
-    OP_BOOL_O,
-    OP_BOOL_NO,
-    OP_BOOL_MENOR,
-    OP_BOOL_MAYOR,
-    OP_BOOL_MENORIGUAL,
-    OP_BOOL_MAYORIGUAL,
-    OP_BOOL_DISTINTO,
-    OP_BOOL_IGUAL
+    IF_GOTO_MENOR,
+    IF_GOTO_MAYOR,
+    IF_GOTO_IGUAL,
+    IF_GOTO_NO_IGUAL,
+    IF_GOTO_MENOR_IGUAL,
+    IF_GOTO_MAYOR_IGUAL,
+    GOTO
 } OperacionCuadruplaT;
 
 typedef struct celdaCuadrupla {
@@ -44,6 +41,7 @@ typedef struct tablaDeCuadruplasT {
 TablaDeCuadruplasT nuevaTablaDeCuadruplas(void);
 bool insertaCuadrupla(TablaDeCuadruplasT *, int, char *, int, int);
 void imprimeTablaDeCuadruplas(TablaDeCuadruplasT);
+int getNextQuad(TablaDeCuadruplasT *);
 
 #endif
 

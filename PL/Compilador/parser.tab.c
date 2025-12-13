@@ -614,16 +614,16 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   116,   116,   117,   118,   119,   120,   121,   122,   122,
-     123,   124,   125,   126,   127,   128,   132,   133,   134,   137,
-     138,   139,   140,   141,   142,   143,   144,   153,   154,   155,
-     156,   160,   161,   162,   163,   164,   167,   168,   169,   173,
-     180,   181,   182,   183,   184,   188,   189,   190,   191,   238,
-     308,   313,   317,   318,   336,   349,   350,   351,   352,   353,
-     362,   364,   368,   372,   373,   374,   375,   379,   380,   381,
-     386,   387,   388,   389,   390,   391,   392,   393,   394,   395,
-     396,   397,   398,   399,   400,   404,   405,   406,   407,   408,
-     409,   410,   411,   412,   416,   417,   418,   419
+       0,   119,   119,   120,   121,   122,   123,   124,   125,   125,
+     126,   127,   128,   129,   130,   131,   135,   136,   137,   140,
+     141,   142,   143,   144,   145,   146,   147,   156,   157,   158,
+     159,   163,   164,   165,   166,   167,   170,   171,   172,   176,
+     183,   184,   185,   186,   187,   191,   195,   201,   205,   252,
+     315,   320,   324,   335,   353,   359,   365,   370,   371,   379,
+     387,   395,   399,   403,   404,   405,   406,   410,   411,   412,
+     421,   422,   423,   424,   425,   426,   427,   428,   429,   430,
+     431,   432,   433,   434,   435,   439,   440,   441,   442,   443,
+     444,   445,   446,   447,   451,   452,   460,   461
 };
 #endif
 
@@ -1349,7 +1349,7 @@ yyreduce:
   switch (yyn)
     {
   case 26: /* V_d_tipo: T_NOMBRE_TIPO  */
-#line 145 "parser.y"
+#line 148 "parser.y"
         {
             char* aux;
             while(!esNulaColaDeStrings(colaTempVariables)){
@@ -1362,7 +1362,7 @@ yyreduce:
     break;
 
   case 38: /* V_lista_id: T_ID T_SEPARADOR V_lista_id  */
-#line 170 "parser.y"
+#line 173 "parser.y"
             { 
                 pideTurnoColaDeStrings(&colaTempVariables, (yyvsp[-2].cadena));
             }
@@ -1370,15 +1370,41 @@ yyreduce:
     break;
 
   case 39: /* V_lista_id: T_ID  */
-#line 174 "parser.y"
+#line 177 "parser.y"
             { 
                 pideTurnoColaDeStrings(&colaTempVariables, (yyvsp[0].cadena));
             }
 #line 1378 "parser.tab.c"
     break;
 
-  case 48: /* V_exp_a: V_exp_a T_OPERADOR_PRIO_TRES V_exp_a  */
+  case 45: /* V_expresion: V_exp_a  */
 #line 192 "parser.y"
+            {
+                (yyval.celda) = (yyvsp[0].celda);
+            }
+#line 1386 "parser.tab.c"
+    break;
+
+  case 46: /* V_expresion: V_exp_b  */
+#line 196 "parser.y"
+            {
+                (yyval.celda).place = -1;
+                (yyval.celda).type = BOOLEANO;
+                (yyval.celda).info = (yyvsp[0].celda).info;
+            }
+#line 1396 "parser.tab.c"
+    break;
+
+  case 47: /* V_expresion: V_funcion_ll  */
+#line 202 "parser.y"
+            {
+                (yyval.celda) = (yyvsp[0].celda);
+            }
+#line 1404 "parser.tab.c"
+    break;
+
+  case 48: /* V_exp_a: V_exp_a T_OPERADOR_PRIO_TRES V_exp_a  */
+#line 206 "parser.y"
         {
             int T = newTempVariable(&ts);
             (yyval.celda).place = T;
@@ -1425,11 +1451,11 @@ yyreduce:
             }
 
         }
-#line 1429 "parser.tab.c"
+#line 1455 "parser.tab.c"
     break;
 
   case 49: /* V_exp_a: V_exp_a T_OPERADOR_PRIO_DOS V_exp_a  */
-#line 239 "parser.y"
+#line 253 "parser.y"
         {
             int T = newTempVariable(&ts);
             (yyval.celda).place = T;
@@ -1446,23 +1472,27 @@ yyreduce:
                 insertaCuadrupla(&tc, T, "/", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
             }
             else if(strcmp((yyvsp[-1].cadena), "div") == 0){
-                modificarTipoT(&ts, T, ENTERO);
-                (yyval.celda).type = ENTERO;
-                if((yyvsp[-2].celda).type == REAL){
-                    insertaCuadrupla(&tc, T, "RTI", (yyvsp[-2].celda).place, -1);
+                if((yyvsp[-2].celda).type == REAL || (yyvsp[0].celda).type == REAL){
+                    printf("Error: la operacion 'div' solo se puede usar con enteros\n");
+                }else{
+                    modificarTipoT(&ts, T, ENTERO);
+                    (yyval.celda).type = ENTERO;
+                    insertaCuadrupla(&tc, T, "div", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                 }
-                if((yyvsp[0].celda).type == REAL){
-                    insertaCuadrupla(&tc, T, "RTI", (yyvsp[0].celda).place, -1);
+            }
+            else if(strcmp((yyvsp[-1].cadena), "mod") == 0){
+                if((yyvsp[-2].celda).type == REAL || (yyvsp[0].celda).type == REAL){
+                    printf("Error: la operacion 'mod' solo se puede usar con enteros\n");
+                }else{
+                    modificarTipoT(&ts, T, ENTERO);
+                    (yyval.celda).type = ENTERO;
+                    insertaCuadrupla(&tc, T, "modE", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                 }
-                insertaCuadrupla(&tc, T, "div", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
             }
             else if((yyvsp[-2].celda).type == ENTERO && (yyvsp[0].celda).type == ENTERO){
                 modificarTipoT(&ts, T, ENTERO);
                 if(strcmp((yyvsp[-1].cadena), "*") == 0){
                     insertaCuadrupla(&tc, T, "*E", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
-                    (yyval.celda).type = ENTERO;
-                }else if(strcmp((yyvsp[-1].cadena), "mod") == 0){
-                    insertaCuadrupla(&tc, T, "modE", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = ENTERO;
                 }
             }else if((yyvsp[-2].celda).type == ENTERO && (yyvsp[0].celda).type == REAL){
@@ -1471,10 +1501,6 @@ yyreduce:
                     insertaCuadrupla(&tc, T, "ITR", (yyvsp[-2].celda).place, -1);
                     insertaCuadrupla(&tc, T, "*R", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = REAL;
-                }else if(strcmp((yyvsp[-1].cadena), "mod") == 0){
-                    insertaCuadrupla(&tc, T, "ITR", (yyvsp[-2].celda).place, -1);
-                    insertaCuadrupla(&tc, T, "modR", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
-                    (yyval.celda).type = REAL;
                 }
             }else if((yyvsp[-2].celda).type == REAL && (yyvsp[0].celda).type == ENTERO){
                 modificarTipoT(&ts, T, REAL);
@@ -1482,44 +1508,52 @@ yyreduce:
                     insertaCuadrupla(&tc, T, "ITR", (yyvsp[0].celda).place, -1);
                     insertaCuadrupla(&tc, T, "*R", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = REAL;
-                }else if(strcmp((yyvsp[-1].cadena), "mod") == 0){
-                    insertaCuadrupla(&tc, T, "ITR", (yyvsp[0].celda).place, -1);
-                    insertaCuadrupla(&tc, T, "modR", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
-                    (yyval.celda).type = REAL;
                 }
             }else if((yyvsp[-2].celda).type == REAL && (yyvsp[0].celda).type == REAL){
                 modificarTipoT(&ts, T, REAL);
                 if(strcmp((yyvsp[-1].cadena), "*") == 0){
                     insertaCuadrupla(&tc, T, "*R", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
                     (yyval.celda).type = REAL;
-                }else if(strcmp((yyvsp[-1].cadena), "mod") == 0){
-                    insertaCuadrupla(&tc, T, "modR", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
-                    (yyval.celda).type = REAL;
                 }
             }
         }
-#line 1502 "parser.tab.c"
+#line 1521 "parser.tab.c"
     break;
 
   case 50: /* V_exp_a: T_PARENTESIS_APERTURA V_exp_a T_PARENTESIS_CIERRE  */
-#line 309 "parser.y"
+#line 316 "parser.y"
         {
             (yyval.celda).place = (yyvsp[-1].celda).place;
             (yyval.celda).type = (yyvsp[-1].celda).type;
         }
-#line 1511 "parser.tab.c"
+#line 1530 "parser.tab.c"
     break;
 
   case 51: /* V_exp_a: V_operando  */
-#line 314 "parser.y"
+#line 321 "parser.y"
         {
             (yyval.celda) = (yyvsp[0].celda);
         }
-#line 1519 "parser.tab.c"
+#line 1538 "parser.tab.c"
+    break;
+
+  case 52: /* V_exp_a: T_LITERAL_NUMERICO  */
+#line 325 "parser.y"
+        {
+            int T = newTempVariable(&ts);
+            (yyval.celda).place = T;
+            (yyval.celda).type = (yyvsp[0].literal_numerico).tipoDelValor;
+            if((yyvsp[0].literal_numerico).tipoDelValor == ENTERO){
+                modificarTipoT(&ts, T, ENTERO);
+            } else if((yyvsp[0].literal_numerico).tipoDelValor == REAL){
+                modificarTipoT(&ts, T, REAL);
+            }
+        }
+#line 1553 "parser.tab.c"
     break;
 
   case 53: /* V_exp_a: T_OPERADOR_PRIO_TRES V_exp_a  */
-#line 319 "parser.y"
+#line 336 "parser.y"
         {
             int T = newTempVariable(&ts);
             modificarTipoT(&ts,T, (yyvsp[0].celda).type);
@@ -1536,65 +1570,121 @@ yyreduce:
                 insertaCuadrupla(&tc, T, "+R", (yyvsp[0].celda).place, 0);
             }
         }
-#line 1540 "parser.tab.c"
+#line 1574 "parser.tab.c"
     break;
 
   case 54: /* V_exp_b: V_exp_b T_OPERADOR_Y V_exp_b  */
-#line 337 "parser.y"
-        {
-            printf("lol1.1\n");
-            int T = newTempVariable(&ts);
-            modificarTipoT(&ts,T, BOOLEANO);
-            (yyval.celda).place = T;
-
-            if ((yyvsp[-2].celda).type != BOOLEANO || (yyvsp[0].celda).type != BOOLEANO){
-                printf("ERROR: NO SE PUEDE HACER ESTO. Continuando...\n");
-            }
-            insertaCuadrupla(&tc, T, "Y", (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
-            printf("lol1\n");
-        }
-#line 1557 "parser.tab.c"
-    break;
-
-  case 59: /* V_exp_b: V_expresion T_OPERADOR_RELACIONAL V_expresion  */
 #line 354 "parser.y"
         {
-            printf("lol2\n");
-            int T = newTempVariable(&ts);
-            modificarTipoT(&ts,T, BOOLEANO);
-            (yyval.celda).place = T;
-            insertaCuadrupla(&tc, T, (yyvsp[-1].cadena), (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
-            printf("lol2.1\n");
+            backpatch((yyvsp[-2].celda).info.bFalse, getNextQuad(&tc), &tc);
+            (yyval.celda).info.bTrue = merge((yyvsp[-2].celda).info.bTrue, (yyvsp[0].celda).info.bTrue);
+            (yyval.celda).info.bFalse = (yyvsp[0].celda).info.bFalse;
         }
-#line 1570 "parser.tab.c"
+#line 1584 "parser.tab.c"
     break;
 
-  case 61: /* V_operando: V_cadena_operandos  */
-#line 365 "parser.y"
-            {
-                (yyval.celda) = (yyvsp[0].celda);
-            }
-#line 1578 "parser.tab.c"
-    break;
-
-  case 62: /* V_cadena_operandos: V_operando_no_booleano V_continuacion_cadena  */
-#line 369 "parser.y"
-                    {
-                        (yyval.celda) = (yyvsp[-1].celda);
-                    }
-#line 1586 "parser.tab.c"
-    break;
-
-  case 66: /* V_operando_no_booleano: T_ID  */
-#line 376 "parser.y"
-                        {
-                            (yyval.celda) = buscaSimboloPorNombre(ts, (yyvsp[0].cadena));
-                        }
+  case 55: /* V_exp_b: V_exp_b T_OPERADOR_O V_exp_b  */
+#line 360 "parser.y"
+        {
+            backpatch((yyvsp[-2].celda).info.bTrue, getNextQuad(&tc), &tc);
+            (yyval.celda).info.bFalse = merge((yyvsp[-2].celda).info.bFalse, (yyvsp[0].celda).info.bFalse);
+            (yyval.celda).info.bTrue = (yyvsp[0].celda).info.bTrue;
+        }
 #line 1594 "parser.tab.c"
     break;
 
+  case 56: /* V_exp_b: T_OPERADOR_NO V_exp_b  */
+#line 366 "parser.y"
+        {
+            (yyval.celda).info.bTrue = (yyvsp[0].celda).info.bFalse;
+            (yyval.celda).info.bFalse = (yyvsp[0].celda).info.bTrue;
+        }
+#line 1603 "parser.tab.c"
+    break;
 
-#line 1598 "parser.tab.c"
+  case 58: /* V_exp_b: T_LITERAL_BOOLEANO  */
+#line 372 "parser.y"
+        {
+            int m_quad = getNextQuad(&tc);
+            (yyval.celda).info.bTrue = makelist(m_quad);
+            (yyval.celda).info.bFalse = makelist(m_quad + 1);
+            insertaCuadrupla(&tc, -1, "==", (yyvsp[0].literal_booleano).valor, 1);
+            insertaCuadrupla(&tc, -1, "goto", -1, -1);
+        }
+#line 1615 "parser.tab.c"
+    break;
+
+  case 59: /* V_exp_b: V_expresion T_OPERADOR_RELACIONAL V_expresion  */
+#line 380 "parser.y"
+        {
+            int m_quad = getNextQuad(&tc);
+            (yyval.celda).info.bTrue = makelist(m_quad);
+            (yyval.celda).info.bFalse = makelist(m_quad + 1);
+            insertaCuadrupla(&tc, -1, (yyvsp[-1].cadena), (yyvsp[-2].celda).place, (yyvsp[0].celda).place);
+            insertaCuadrupla(&tc, -1, "goto", -1, -1);
+        }
+#line 1627 "parser.tab.c"
+    break;
+
+  case 60: /* V_exp_b: T_PARENTESIS_APERTURA V_exp_b T_PARENTESIS_CIERRE  */
+#line 388 "parser.y"
+        {
+            int m_quad = getNextQuad(&tc);
+            (yyval.celda).info.bTrue = makelist(m_quad);
+            (yyval.celda).info.bFalse = makelist(m_quad + 1);
+            insertaCuadrupla(&tc, -1, "==", 1, 1);
+            insertaCuadrupla(&tc, -1, "goto", -1, -1);
+        }
+#line 1639 "parser.tab.c"
+    break;
+
+  case 61: /* V_operando: V_cadena_operandos  */
+#line 396 "parser.y"
+            {
+                (yyval.celda) = (yyvsp[0].celda);
+            }
+#line 1647 "parser.tab.c"
+    break;
+
+  case 62: /* V_cadena_operandos: V_operando_no_booleano V_continuacion_cadena  */
+#line 400 "parser.y"
+                    {
+                        (yyval.celda) = (yyvsp[-1].celda);
+                    }
+#line 1655 "parser.tab.c"
+    break;
+
+  case 66: /* V_operando_no_booleano: T_ID  */
+#line 407 "parser.y"
+                        {
+                            (yyval.celda) = buscaSimboloPorNombre(ts, (yyvsp[0].cadena));
+                        }
+#line 1663 "parser.tab.c"
+    break;
+
+  case 69: /* V_operando_booleano: T_ID_BOOLEANO  */
+#line 413 "parser.y"
+                    {
+                        Celda celda = buscaSimboloPorNombre(ts, (yyvsp[0].cadena));
+                        (yyval.celda) = celda;
+                    }
+#line 1672 "parser.tab.c"
+    break;
+
+  case 95: /* V_funcion_ll: T_ID T_PARENTESIS_APERTURA V_l_ll T_PARENTESIS_CIERRE  */
+#line 453 "parser.y"
+            {
+                // Por ahora, retornamos una celda con valores por defecto
+                (yyval.celda).place = -1;
+                (yyval.celda).type = ENTERO;
+                (yyval.celda).info.bTrue = NULL;
+                (yyval.celda).info.bFalse = NULL;
+            }
+#line 1684 "parser.tab.c"
+    break;
+
+
+#line 1688 "parser.tab.c"
 
       default: break;
     }
@@ -1787,7 +1877,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 421 "parser.y"
+#line 463 "parser.y"
 
 
 int main(int argc, char **argv){

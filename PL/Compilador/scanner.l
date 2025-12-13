@@ -73,6 +73,7 @@ ER_corchete_apertura \[
 ER_corchete_cierre \]
 ER_letra [a-zA-Z]
 ER_cifra [0-9]
+ER_id_booleano es_{ER_letra}({ER_letra}|{ER_cifra})*
 ER_id {ER_letra}({ER_letra}|{ER_cifra})*
 ER_literal_entero {ER_cifra}{ER_cifra}*((\+)?(e|E){ER_cifra}{ER_cifra}*)?
 ER_literal_real {ER_cifra}{ER_cifra}*\.{ER_cifra}{ER_cifra}*((e|E)(\+|-)?{ER_cifra}{ER_cifra}*)?|{ER_literal_entero}(r|R)
@@ -114,7 +115,10 @@ ER_literal_real {ER_cifra}{ER_cifra}*\.{ER_cifra}{ER_cifra}*((e|E)(\+|-)?{ER_cif
                             }
 {ER_operador_def_tipo}      { return T_OPERADOR_DEF_TIPO; }
 {ER_operador_no}            { return T_OPERADOR_NO; }
-{ER_operador_o}             { return T_OPERADOR_O; }
+{ER_operador_o}             { 
+                              yylval.cadena = strdup(yytext);
+                              return T_OPERADOR_O; 
+                            }
 {ER_operador_prio_dos}      { 
                               yylval.cadena = strdup(yytext);                              
                               return T_OPERADOR_PRIO_DOS; 
@@ -124,10 +128,13 @@ ER_literal_real {ER_cifra}{ER_cifra}*\.{ER_cifra}{ER_cifra}*((e|E)(\+|-)?{ER_cif
                               return T_OPERADOR_PRIO_TRES; 
                             }
 {ER_operador_relacional}    { 
-                                yylval.cadena = strdup(yytext);
-                                return T_OPERADOR_RELACIONAL;     
+                              yylval.cadena = strdup(yytext);
+                              return T_OPERADOR_RELACIONAL; 
                             }
-{ER_operador_y}             { return T_OPERADOR_Y; }
+{ER_operador_y}             { 
+                              yylval.cadena = strdup(yytext);
+                              return T_OPERADOR_Y; 
+                            }
 {ER_parentesis_aperura}     { return T_PARENTESIS_APERTURA; }
 {ER_parentesis_cierre}      { return T_PARENTESIS_CIERRE; }
 {ER_punto}                  { return T_PUNTO; }
@@ -173,7 +180,10 @@ ER_literal_real {ER_cifra}{ER_cifra}*\.{ER_cifra}{ER_cifra}*((e|E)(\+|-)?{ER_cif
                                 yylval.literal_numerico.valor.valorReal = atof(yytext);
                                 return T_LITERAL_NUMERICO;
                             }
-
+{ER_id_booleano}            { 
+                                yylval.cadena = strdup(yytext);
+                                return T_ID_BOOLEANO;
+                            }
 {ER_id}                     { 
                                 yylval.cadena = strdup(yytext);
                                 return T_ID;

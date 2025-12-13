@@ -125,13 +125,14 @@ union YYSTYPE
     char *cadena; 
 
     Celda celda;
+    InfoBooleanas info;
 
     LiteralBooleanoT literal_booleano;
     LiteralCaracterT literal_caracter;
     LiteralCadenaT literal_cadena;
     LiteralT literal_numerico;
 
-#line 135 "parser.tab.h"
+#line 136 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

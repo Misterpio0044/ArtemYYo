@@ -189,7 +189,7 @@ Terminales con las reglas donde aparecen
     T_NOMBRE_TIPO <cadena> (289) 25
     T_OPERADOR_DEF_TIPO (290) 28 35 90 91 92
     T_OPERADOR_NO (291) 55
-    T_OPERADOR_O (292) 54
+    T_OPERADOR_O <cadena> (292) 54
     T_OPERADOR_PRIO_DOS <cadena> (293) 48
     T_OPERADOR_PRIO_TRES <cadena> (294) 47 52
     T_OPERADOR_RELACIONAL <cadena> (295) 58
@@ -300,7 +300,7 @@ No terminales con las reglas donde aparecen
     V_operando_no_booleano <celda> (88)
         on left: 65 66 67
         on right: 61 62
-    V_operando_booleano (89)
+    V_operando_booleano <celda> (89)
         on left: 68
         on right: 56 63
     V_instrucciones (90)
@@ -348,7 +348,7 @@ No terminales con las reglas donde aparecen
     V_accion_ll (104)
         on left: 93
         on right: 75
-    V_funcion_ll (105)
+    V_funcion_ll <celda> (105)
         on left: 94
         on right: 46
     V_l_ll (106)

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "tablaDeSimbolos.h"
+#include "tablaDeCuadruplas.h"
 #include <ctype.h>
 
 
@@ -12,10 +13,10 @@ TablaDeSimbolosT nuevaTablaDeSimbolos() {
     for (int i = 0; i < 100; i++) {
         tabla.celdas[i].nombre = NULL;
         tabla.celdas[i].place = i;
-        tabla.celdas[i].type = ENTERO; 
-    }
-    
-    return tabla;
+        tabla.celdas[i].type = ENTERO;
+        tabla.celdas[i].info.bTrue = NULL;
+        tabla.celdas[i].info.bFalse = NULL;
+    }    return tabla;
 }
 
 bool insertaSimbolos(TablaDeSimbolosT * tabla, char * nombre, char* valor) {
@@ -144,13 +145,36 @@ void modificarTipoT(TablaDeSimbolosT * ts, int place, NombreDeTipoT nuevoType) {
             break;
     }
 }
-/*
-declaracion var → var lista d var fvar;
-lista d var → lista id : d tipo; lista d var | ε
-lista id → identificador, lista id | identificador
 
-hacer array de cadena de caracteres
-*/
+ListaEnteros* makelist(int quad) {
+    ListaEnteros* lista = (ListaEnteros*) malloc(sizeof(ListaEnteros));
+    Nodo* nodo = (Nodo*) malloc(sizeof(Nodo));
+    nodo->quad = quad;
+    nodo->sig = NULL;
+    lista->primero = nodo;
+    return lista;
+}
 
+ListaEnteros* merge(ListaEnteros* l1, ListaEnteros* l2) {
+    if (l1 == NULL) return l2;
+    if (l2 == NULL) return l1;
+    
+    Nodo* aux = l1->primero;
+    while (aux->sig != NULL) {
+        aux = aux->sig;
+    }
+    aux->sig = l2->primero;
+    return l1;
+}
+
+void backpatch(ListaEnteros* list, int target, TablaDeCuadruplasT * tc) {
+    if (list == NULL) return;
+    
+    Nodo* aux = list->primero;
+    while (aux != NULL) {
+        tc->celdas[aux->quad].resultado = target;
+        aux = aux->sig;
+    }
+}
 
 
