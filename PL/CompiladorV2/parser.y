@@ -438,10 +438,10 @@ V_asignacion: V_operando T_ASIGNACION V_expresion
                 if($1.type == BOOLEANO){
                     int m_quad = getNextQuad(&tc);
                     backpatch($3.info.bFalse, m_quad, &tc);
-                    insertaCuadrupla(&tc, $1.place, ":=", 1, -1);
-                    insertaCuadrupla(&tc, m_quad+2, "goto", -1, -1);
+                    insertaCuadrupla(&tc, $1.valor.literalBooleanoT.valor, ":=", 1, -1);
+                    insertaCuadrupla(&tc, m_quad+2, "goto", -1, -1); //mal
                     backpatch($3.info.bTrue, m_quad, &tc);
-                    insertaCuadrupla(&tc, $1.place, ":=", 0, -1); 
+                    insertaCuadrupla(&tc, $1.valor.literalBooleanoT.valor, ":=", 0, -1); 
                 } else {
                     insertaCuadrupla(&tc, $1.place, ":=", $3.place, -1);
                 }
@@ -483,9 +483,9 @@ V_l_ll: V_expresion T_SEPARADOR V_l_ll
 %%
 
 int main(int argc, char **argv){
-	/* #if defined YYDEBUG
-	yydebug = 1;
-	#endif */
+	//#if defined YYDEBUG
+	//yydebug = 1;
+	//#endif
 	++argv, --argc;
 	if (argc > 0)
 		yyin = fopen(argv[0], "r");
@@ -503,3 +503,19 @@ int main(int argc, char **argv){
 void yyerror(const char *s) {
     fprintf(stderr, "Error de sintaxis: %s\n", s);
 }
+
+
+
+
+
+
+ // DUDAS
+ // Tabla simbolos...
+
+
+ /*
+ bison -v -d parser.y
+ flex scanner.l
+ gcc -c lex.yy.c
+ gcc parser.tab.c lex.yy.o -lfl -lm 
+ */

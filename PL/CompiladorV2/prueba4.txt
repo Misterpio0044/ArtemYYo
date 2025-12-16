@@ -1,18 +1,12 @@
 algoritmo sumacomb;
-ent n, m: entero; 
+ent n, m: booleano; 
 uno, dos, tres: entero;
 sal suma: entero;
 {Prec: n= N AND m = M AND M >= N >0}
 var
-i, comb: entero;
+es_i, es_comb: booleano;
 fvar;
-i:= 0;
-suma:= 0;
-comb:= m;
-mientras i <n hacer
-suma := suma + comb;
-comb := comb * (m - i -uno) div (i + dos);
-i := i+tres
-fmientras
+es_comb := verdadero;
+es_i:= ((n < m) y es_comb y (dos >= tres))
 {Post: n =N AND suma = SUMATORIO(i=1..N)(M sobre i)}
 falgoritmo.

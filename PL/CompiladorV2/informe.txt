@@ -1,0 +1,17 @@
+1. ¿Qué hace nuestro compilador?
+- Flex reconoce todos los tokens requeridos.
+- Bison define la gramática.
+- Reconoce y pone en la tabla de variables todas aquellas variables definidas entre var y fvar
+- Reconoce expresiones aritméticas
+- Reconoce expresiones booleanas
+
+2. Características específicas:
+Hemos seguido todos los pasos marcados por el guion. Las únicas alteraciones han sido, alterar la gramática para diferenciar entre expresiones booleanas y aritméticas creando un T_ID (el aritmético) y un T_ID_BOOLEANO. tuvimo que alterar ligeramente la gramática para poder reconocer las variables concatenadas. Además, debido a una complicación en la construcción del parser con los literales, hemos dividido el tipo literal y literal entero, real, cadena... Esto ha generado problemas más adelante ya que aumentaba ligeramente la complejidad de algunas implementaciones.
+
+3. Pasos a dar:
+En el directorio raiz:
+~ make
+~ ./compilador prueba1.txt
+Para probar los ejemplos 2 y 3 (los de los apuntes) simplemente cambiar el número del .txt
+
+
